@@ -1,0 +1,9 @@
+{
+  "name": "kursor-fortuna",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Колесо Фортуны Kursor + интеграция с amoCRM (тег на сделку)",
+  "engines": {
+    "node": ">=18"
+  }
+}
