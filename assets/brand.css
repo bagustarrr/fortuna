@@ -1,0 +1,64 @@
+/* ============================================================
+   KURSOR — общий бренд-слой для всех страниц воронки
+   Белая тема · оранж/жёлтый акцент · шрифт Manrope
+   Подключается на каждой странице: <link href="../assets/brand.css">
+   ============================================================ */
+:root{
+  color-scheme:light;
+  --bg:#ffffff;
+  --ink:#0f0f0f; --ink-soft:#5b5b5b; --ink-mute:#8a8a8a;
+  --gold:#facc15; --amber:#fbbf24; --orange:#f97316; --orange-d:#ea580c; --blue:#007aff;
+  --ok:#16a34a; --danger:#dc2626;
+  --line:rgba(15,15,15,.10);
+  --card:#ffffff;
+  --radius:20px;
+  --shadow:0 16px 40px rgba(15,15,15,.10);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+[hidden]{display:none !important}
+body{
+  font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+  background:var(--bg); color:var(--ink);
+  min-height:100dvh; overflow-x:hidden; line-height:1.5;
+  background-image:
+    radial-gradient(55% 38% at 50% -6%, rgba(250,204,21,.16), transparent 68%),
+    radial-gradient(45% 35% at 92% 6%, rgba(249,115,22,.09), transparent 70%),
+    radial-gradient(55% 45% at 6% 100%, rgba(0,122,255,.05), transparent 70%);
+  background-attachment:fixed;
+}
+
+/* ---------- Верхняя шапка: логотип + приветствие ---------- */
+.kx-top{
+  width:100%;max-width:640px;margin:0 auto;
+  padding:18px 18px 0;
+  display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;
+}
+.kx-logo{height:30px;width:auto;max-width:64vw;display:block}
+.kx-hello{
+  font-weight:800;font-size:clamp(17px,4.6vw,21px);letter-spacing:-.2px;line-height:1.2;
+  max-width:100%;
+}
+.kx-hello .wave{display:inline-block;animation:kxwave 2.2s ease-in-out infinite;transform-origin:70% 70%}
+@keyframes kxwave{0%,60%,100%{transform:rotate(0)}20%{transform:rotate(16deg)}40%{transform:rotate(-8deg)}}
+.kx-sub{color:var(--ink-soft);font-size:clamp(13px,3.6vw,15px);max-width:340px;margin:0 auto}
+
+/* ---------- Общие кнопки ---------- */
+.kx-btn{
+  font-family:inherit;font-weight:800;cursor:pointer;border:none;
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  user-select:none;touch-action:manipulation;
+  transition:transform .12s ease,box-shadow .2s ease,opacity .2s;
+  color:#3a2400;background:linear-gradient(100deg,var(--gold),var(--orange));
+  box-shadow:0 12px 28px rgba(249,115,22,.30),inset 0 1px 0 rgba(255,255,255,.45);
+  border-radius:16px;padding:17px 24px;font-size:17px;
+}
+.kx-btn:not(:disabled):active{transform:scale(.97)}
+.kx-btn:disabled{opacity:.7;cursor:default}
+.kx-btn.ghost{
+  background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:none;
+}
+
+@media (prefers-reduced-motion:reduce){
+  .kx-hello .wave{animation:none}
+}

@@ -4,622 +4,67 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1">
 <meta name="theme-color" content="#ffffff">
-<title>Колесо Фортуны · Kursor</title>
-<meta name="description" content="Крутите колесо фортуны школы программирования Kursor и заберите свой подарок!">
-<meta property="og:title" content="Колесо Фортуны · Kursor">
-<meta property="og:description" content="Крутите колесо — и заберите подарок на первой встрече!">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎡</text></svg>">
+<title>KURSOR — школа программирования</title>
+<meta name="description" content="Диагностика, видео-презентация и колесо фортуны школы программирования Kursor">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/brand.css">
 <style>
-  :root{
-    color-scheme:light;
-    --bg:#ffffff;
-    --ink:#0f0f0f; --ink-soft:#5b5b5b; --ink-mute:#8a8a8a;
-    --gold:#facc15; --amber:#fbbf24; --orange:#f97316; --orange-d:#ea580c; --blue:#007aff;
-    --line:rgba(15,15,15,.10);
-    --card:#ffffff;
+  .wrap{width:100%;max-width:520px;margin:0 auto;padding:8px 18px calc(28px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center}
+  .lead{text-align:center;color:var(--ink-soft);font-size:15px;margin:2px 0 22px}
+  .cards{display:flex;flex-direction:column;gap:12px;width:100%}
+  .card{
+    display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--ink);
+    background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 18px;
+    box-shadow:0 10px 26px rgba(15,15,15,.06);transition:transform .12s ease,box-shadow .2s ease;
   }
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html{-webkit-text-size-adjust:100%}
-  body{
-    font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
-    background:var(--bg); color:var(--ink);
-    min-height:100dvh; overflow-x:hidden;
-    display:flex; flex-direction:column; align-items:center;
-    padding:22px 18px calc(28px + env(safe-area-inset-bottom));
-    background-image:
-      radial-gradient(55% 38% at 50% -6%, rgba(250,204,21,.18), transparent 68%),
-      radial-gradient(45% 35% at 90% 8%, rgba(249,115,22,.10), transparent 70%),
-      radial-gradient(55% 45% at 6% 100%, rgba(0,122,255,.06), transparent 70%);
-    background-attachment:fixed;
-  }
-
-  /* ---------- Header ---------- */
-  .brand-row{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:6px}
-  .brand{
-    font-weight:800; font-size:26px; letter-spacing:.5px; line-height:1; color:var(--ink);
-    display:flex; align-items:baseline;
-  }
-  .brand .caret{color:var(--orange); margin-left:1px; animation:blink 1.1s steps(1) infinite}
-  @keyframes blink{50%{opacity:0}}
-  .brand-sub{
-    font-size:11px; letter-spacing:2.4px; text-transform:uppercase;
-    color:var(--ink-mute); font-weight:600;
-  }
-
-  /* ---------- Hero ---------- */
-  .pill{
-    display:inline-flex;align-items:center;gap:7px;
-    margin:16px 0 12px; padding:7px 15px;border-radius:100px;
-    background:rgba(250,204,21,.16);
-    border:1px solid rgba(245,158,11,.35);
-    color:#b45309;font-weight:700;font-size:12.5px;letter-spacing:.3px;
-    max-width:100%;text-align:center;
-  }
-  .pill .dot{width:7px;height:7px;border-radius:50%;background:var(--orange);box-shadow:0 0 10px rgba(249,115,22,.6);flex:0 0 auto}
-  h1{
-    text-align:center; font-weight:800; line-height:1.04; color:var(--ink);
-    font-size:clamp(30px,8.5vw,44px); letter-spacing:-.5px; max-width:100%;
-  }
-  h1 .grad{
-    background:linear-gradient(100deg,#f59e0b,var(--orange));
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-  }
-  .lead{
-    text-align:center;color:var(--ink-soft);font-size:clamp(14px,3.8vw,16px);
-    margin-top:12px;max-width:340px;line-height:1.5;
-  }
-
-  /* ---------- Wheel ---------- */
-  .stage{
-    position:relative;
-    width:min(88vw,430px); aspect-ratio:1/1;
-    margin:26px auto 8px;
-    filter:drop-shadow(0 20px 42px rgba(15,15,15,.15));
-  }
-  #wheelSvg{width:100%;height:100%;display:block;overflow:visible}
-  #wheel{
-    transform-box:fill-box; transform-origin:center;
-    transition:transform 5.2s cubic-bezier(.16,1,.3,1);
-    will-change:transform;
-  }
-  .seg-label{
-    font-family:'Manrope',sans-serif;font-weight:800;font-size:12.5px;
-    letter-spacing:.2px;text-transform:uppercase;
-  }
-  .seg-emoji{font-size:30px}
-  #hub{cursor:pointer}
-  .hub-k{font-family:'Manrope',sans-serif;font-weight:800;font-size:34px;fill:#0f0f0f}
-  .spin-pulse{animation:hubpulse .6s ease}
-  @keyframes hubpulse{50%{transform:scale(.9)}}
-
-  /* ---------- Button ---------- */
-  .btn{
-    font-family:inherit;font-weight:800;cursor:pointer;border:none;
-    display:inline-flex;align-items:center;justify-content:center;gap:9px;
-    user-select:none;touch-action:manipulation;transition:transform .12s ease,box-shadow .2s ease,opacity .2s;
-  }
-  .btn-spin{
-    width:min(88vw,430px);max-width:100%;
-    margin-top:18px;padding:19px 24px;border-radius:18px;
-    font-size:19px;color:#3a2400;
-    background:linear-gradient(100deg,var(--gold),var(--orange));
-    box-shadow:0 12px 28px rgba(249,115,22,.30),inset 0 1px 0 rgba(255,255,255,.45);
-    position:relative;overflow:hidden;
-  }
-  .btn-spin::after{
-    content:"";position:absolute;top:0;left:-60%;width:45%;height:100%;
-    background:linear-gradient(100deg,transparent,rgba(255,255,255,.6),transparent);
-    transform:skewX(-20deg);animation:shine 3.4s ease-in-out infinite;
-  }
-  @keyframes shine{0%,100%{left:-60%}55%{left:130%}}
-  .btn-spin:not(:disabled):active{transform:scale(.97)}
-  .btn-spin:disabled{opacity:.72;cursor:default}
-  .btn-spin:disabled::after{display:none}
-
-  .note{
-    margin-top:14px;color:var(--ink-mute);font-size:13px;font-weight:600;
-    max-width:min(90vw,430px);text-align:center;line-height:1.5;
-  }
-
-  /* ---------- Prize chips ---------- */
-  .chips{
-    display:flex;flex-wrap:wrap;justify-content:center;gap:8px;
-    margin-top:20px;width:100%;max-width:430px;
-  }
-  .chip{
-    font-size:12.5px;font-weight:600;color:#3a3a3a;
-    padding:8px 13px;border-radius:100px;
-    background:#f6f6f6;border:1px solid var(--line);
-  }
-
-  /* ---------- Footer ---------- */
-  footer{margin-top:28px;color:var(--ink-mute);font-size:12.5px;text-align:center;line-height:1.6}
-  footer a{color:var(--orange-d);text-decoration:none;font-weight:700}
-
-  /* ---------- Modal ---------- */
-  .modal{
-    position:fixed;inset:0;z-index:60;display:none;
-    align-items:center;justify-content:center;padding:22px;
-    background:rgba(15,15,15,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-  }
-  .modal.show{display:flex;animation:fade .3s ease}
-  @keyframes fade{from{opacity:0}to{opacity:1}}
-  .modal-card{
-    position:relative;
-    width:100%;max-width:380px;text-align:center;
-    background:#ffffff;
-    border:1px solid rgba(245,158,11,.35);border-radius:26px;
-    padding:34px 26px 26px;
-    box-shadow:0 30px 70px rgba(15,15,15,.28);
-    animation:pop .5s cubic-bezier(.2,1.2,.3,1) both;
-  }
-  @keyframes pop{from{transform:scale(.82) translateY(14px);opacity:0}to{transform:none;opacity:1}}
-  .modal-close{
-    position:absolute;top:12px;right:14px;width:34px;height:34px;border-radius:50%;
-    border:1px solid var(--line);background:#f3f3f3;color:#666;
-    font-size:20px;line-height:1;cursor:pointer;font-family:inherit;z-index:2;
-  }
-  .modal-close:active{transform:scale(.94)}
-  .burst{
-    font-size:70px;line-height:1;margin-bottom:8px;display:inline-block;
-    animation:bob 2.4s ease-in-out infinite;
-    filter:drop-shadow(0 8px 20px rgba(249,115,22,.35));
-  }
-  @keyframes bob{50%{transform:translateY(-8px) rotate(-4deg)}}
-  .win-kicker{
-    color:var(--orange-d);font-weight:800;font-size:14px;letter-spacing:2.5px;
-    text-transform:uppercase;margin-bottom:8px;
-  }
-  .win-title{font-size:24px;font-weight:800;line-height:1.15;letter-spacing:-.3px;color:var(--ink)}
-  .win-title .grad{background:linear-gradient(100deg,#f59e0b,var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent}
-  .win-sub{color:var(--ink-soft);font-size:15px;margin:12px 0 18px;line-height:1.5}
-  .win-sub b{color:var(--ink)}
-
-  /* ---------- Deal form ---------- */
-  .deal-form{display:flex;flex-direction:column;gap:10px}
-  .deal-input{
-    width:100%;padding:15px 16px;border-radius:14px;font-size:16px;font-family:inherit;font-weight:700;
-    border:1.5px solid var(--line);background:#fff;color:var(--ink);text-align:center;letter-spacing:.5px;outline:none;
-    transition:border-color .15s,box-shadow .15s;
-  }
-  .deal-input:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(249,115,22,.15)}
-  .deal-input::placeholder{color:#bbb;font-weight:600;letter-spacing:0}
-  .btn-submit{
-    width:100%;padding:15px;border-radius:14px;font-size:16px;font-weight:800;color:#3a2400;
-    border:none;cursor:pointer;font-family:inherit;
-    background:linear-gradient(100deg,var(--gold),var(--orange));
-    box-shadow:0 8px 20px rgba(249,115,22,.28);transition:transform .12s,opacity .2s;
-  }
-  .btn-submit:active{transform:scale(.98)}
-  .btn-submit:disabled{opacity:.7;cursor:default}
-  .form-msg{margin-top:11px;font-size:13.5px;font-weight:600;min-height:18px;line-height:1.4}
-  .form-msg.err{color:#dc2626}
-  .form-hint{margin-top:10px;font-size:12px;color:var(--ink-mute);line-height:1.4}
-  .ok-check{font-size:56px;line-height:1;margin-bottom:6px;filter:drop-shadow(0 6px 14px rgba(34,197,94,.35))}
-
-  /* ---------- Ticket ---------- */
-  .ticket{
-    width:min(88vw,430px);margin:20px auto 0;text-align:center;
-    background:#fffdf5;
-    border:1.5px dashed rgba(245,158,11,.55);border-radius:22px;
-    padding:24px 22px;
-    box-shadow:0 16px 36px rgba(15,15,15,.10);
-  }
-  .ticket-emoji{font-size:46px;line-height:1;margin-bottom:6px;filter:drop-shadow(0 6px 14px rgba(249,115,22,.35))}
-  .ticket-title{font-weight:800;font-size:17px;line-height:1.3;margin-bottom:14px;color:var(--ink)}
-  .ticket-code{
-    font-size:22px;font-weight:800;letter-spacing:.5px;color:var(--orange-d);
-    padding:12px 0;margin-bottom:12px;
-    border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);
-  }
-  .ticket-note{color:var(--orange-d);font-weight:700;font-size:14px;margin-bottom:6px}
-  .ticket-hint{color:var(--ink-mute);font-size:13px;line-height:1.45}
-
-  #confetti{position:fixed;inset:0;z-index:55;pointer-events:none}
-
-  @media (prefers-reduced-motion:reduce){
-    .brand .caret,.btn-spin::after,.burst{animation:none}
-  }
-  @media (max-width:360px){
-    .seg-emoji{font-size:26px}.seg-label{font-size:11px}
-  }
+  .card:active{transform:scale(.98)}
+  .card:hover{box-shadow:0 14px 32px rgba(15,15,15,.10);transform:translateY(-2px)}
+  .card .emoji{font-size:30px;line-height:1;flex:0 0 auto}
+  .card .t{display:block;font-weight:800;font-size:17px;line-height:1.25}
+  .card .s{display:block;color:var(--ink-mute);font-size:13px;font-weight:600;margin-top:3px}
+  .card .arr{margin-left:auto;color:var(--orange);font-weight:800;font-size:20px}
+  .foot{margin-top:26px;color:var(--ink-mute);font-size:12.5px;text-align:center}
+  .foot a{color:var(--orange-d);text-decoration:none;font-weight:700}
 </style>
 </head>
 <body>
+  <header class="kx-top">
+    <img class="kx-logo" src="assets/logo.png" alt="КУРСОР — школа программирования">
+    <div class="kx-hello">Добро пожаловать! <span class="wave">👋</span></div>
+  </header>
 
-  <div class="brand-row">
-    <div class="brand">KURSOR<span class="caret">_</span></div>
-    <div class="brand-sub">школа программирования</div>
-  </div>
+  <main class="wrap">
+    <p class="lead">Школа программирования для детей 6–16 лет</p>
+    <nav class="cards" id="cards">
+      <a class="card" href="diagnostic/">
+        <span class="emoji">🧠</span>
+        <span><span class="t">Диагностика способностей</span><span class="s">Игровой тест мышления ребёнка</span></span>
+        <span class="arr">→</span>
+      </a>
+      <a class="card" href="video/">
+        <span class="emoji">🎬</span>
+        <span><span class="t">Видео-презентация</span><span class="s">Короткое видео о школе</span></span>
+        <span class="arr">→</span>
+      </a>
+      <a class="card" href="fortuna/">
+        <span class="emoji">🎡</span>
+        <span><span class="t">Колесо Фортуны</span><span class="s">Крутите и заберите подарок</span></span>
+        <span class="arr">→</span>
+      </a>
+    </nav>
+    <div class="foot">© KURSOR · <a href="https://kursor.school/" target="_blank" rel="noopener">kursor.school →</a></div>
+  </main>
 
-  <div class="pill"><span class="dot"></span>Подарок только на первой встрече</div>
-
-  <h1>Колесо <span class="grad">Фортуны</span></h1>
-  <p class="lead">Один прокрут — один подарок. Крутите колесо и заберите приз на первой встрече в Kursor 🎧</p>
-
-  <div class="stage">
-    <svg id="wheelSvg" viewBox="0 0 420 420" aria-label="Колесо фортуны">
-      <defs>
-        <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#fbbf24"/>
-          <stop offset="1" stop-color="#f97316"/>
-        </linearGradient>
-        <radialGradient id="hubGrad" cx="35%" cy="30%" r="75%">
-          <stop offset="0" stop-color="#fef08a"/>
-          <stop offset="55%" stop-color="#facc15"/>
-          <stop offset="100%" stop-color="#f59e0b"/>
-        </radialGradient>
-        <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="2.2" result="b"/>
-          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-        <filter id="ptrShadow" x="-60%" y="-60%" width="220%" height="220%">
-          <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.30"/>
-        </filter>
-      </defs>
-
-      <!-- rotating part -->
-      <g id="wheel"></g>
-
-      <!-- static frame -->
-      <g id="rim"></g>
-
-      <!-- static hub (also clickable) -->
-      <g id="hub" role="button" aria-label="Крутить">
-        <circle cx="210" cy="210" r="47" fill="#ffffff"/>
-        <circle cx="210" cy="210" r="41" fill="url(#hubGrad)"/>
-        <text x="210" y="211" text-anchor="middle" dominant-baseline="central" class="hub-k">K</text>
-        <circle cx="210" cy="210" r="47" fill="none" stroke="url(#goldGrad)" stroke-width="3.5"/>
-      </g>
-
-      <!-- static pointer -->
-      <g filter="url(#ptrShadow)">
-        <path d="M210 47 L192 8 Q210 -1 228 8 Z" fill="url(#goldGrad)" stroke="#ffffff" stroke-width="3"/>
-        <circle cx="210" cy="15" r="4" fill="#ffffff"/>
-      </g>
-    </svg>
-  </div>
-
-  <button class="btn btn-spin" id="spinBtn">Крутить колесо 🎡</button>
-
-  <div class="note" id="note">🎁 Один прокрут на устройство · подарок для новых учеников</div>
-
-  <div class="chips" id="chips">
-    <span class="chip">🎧 Наушники</span>
-    <span class="chip">🎓 Сертификат</span>
-    <span class="chip">🎟️ Пробный урок</span>
-    <span class="chip">💯 Скидка на курс</span>
-    <span class="chip">🖊️ Ручка</span>
-    <span class="chip">📒 Блокнот</span>
-  </div>
-
-  <!-- Персональный талон: показывается после закрепления подарка -->
-  <div class="ticket" id="ticket" hidden>
-    <div class="ticket-emoji">🎧</div>
-    <div class="ticket-title">Наушники закреплены за вами</div>
-    <div class="ticket-code" id="ticketCode">Сделка #0000</div>
-    <div class="ticket-note">🔥 Действует только на первой встрече</div>
-    <div class="ticket-hint">Менеджер Kursor свяжется с вами и передаст подарок</div>
-  </div>
-
-  <footer>
-    © Kursor · Заберите подарок на встрече<br>
-    <a href="https://kursor.school/" target="_blank" rel="noopener">kursor.school →</a>
-  </footer>
-
-  <!-- Win modal -->
-  <div class="modal" id="modal" aria-hidden="true">
-    <div class="modal-card" role="dialog" aria-modal="true">
-      <button class="modal-close" id="closeBtn" aria-label="Закрыть">×</button>
-
-      <!-- Экран выигрыша + форма -->
-      <div id="winView">
-        <div class="burst">🎧</div>
-        <div class="win-kicker">Поздравляем!</div>
-        <h2 class="win-title">Вам выпали <span class="grad">беспроводные наушники</span></h2>
-        <p class="win-sub">🔥 Действует <b>только на первой встрече</b>. Введите номер вашей сделки (менеджер прислал его вам), чтобы закрепить подарок.</p>
-        <form class="deal-form" id="dealForm" novalidate>
-          <input class="deal-input" id="dealInput" inputmode="numeric" pattern="[0-9]*" placeholder="Номер сделки, напр. 1234567" autocomplete="off" aria-label="Номер сделки">
-          <button type="submit" class="btn-submit" id="submitBtn">Закрепить подарок 🎁</button>
-        </form>
-        <div class="form-msg" id="formMsg"></div>
-        <div class="form-hint">Номер сделки вам отправит менеджер отдела продаж.</div>
-      </div>
-
-      <!-- Экран успеха -->
-      <div id="okView" hidden>
-        <div class="ok-check">✅</div>
-        <div class="win-kicker" style="color:#16a34a">Готово!</div>
-        <h2 class="win-title">Наушники <span class="grad">закреплены за вами</span></h2>
-        <p class="win-sub">Подарок привязан к вашей сделке. Менеджер Kursor свяжется с вами — ждём на первой встрече! 🎧</p>
-      </div>
-    </div>
-  </div>
-
-  <canvas id="confetti"></canvas>
-
-<script>
-(function(){
-  "use strict";
-
-  // === НАСТРОЙКА ===
-  // Адрес серверной функции. На Vercel фронт и функция на одном домене — оставляем относительный путь.
-  const API_URL = '/api/tag';
-
-  // Призы на колесе. win:true — сегмент с наушниками (падают всегда).
-  // Все сегменты в светлых тонах — наушники НЕ выделяются среди других.
-  const SEGMENTS = [
-    { icon:'🎧', label:'Наушники', win:true, bg:'#ffffff', fg:'#0f0f0f' }, // 0 — единственный выигрышный
-    { icon:'🎓', label:'Сертификат',         bg:'#fef3c7', fg:'#0f0f0f' }, // 1
-    { icon:'💯', label:'−20%',               bg:'#ffffff', fg:'#0f0f0f' }, // 2
-    { icon:'🎟️', label:'Урок',               bg:'#ffedd5', fg:'#0f0f0f' }, // 3
-    { icon:'🎒', label:'Мерч',               bg:'#ffffff', fg:'#0f0f0f' }, // 4
-    { icon:'⭐', label:'−15%',               bg:'#fef3c7', fg:'#0f0f0f' }, // 5
-    { icon:'🖊️', label:'Ручка',              bg:'#ffffff', fg:'#0f0f0f' }, // 6
-    { icon:'📒', label:'Блокнот',            bg:'#ffedd5', fg:'#0f0f0f' }  // 7
-  ];
-
-  const CX = 210, CY = 210, R = 190, RT = 124;
-  const N = SEGMENTS.length, SEG = 360 / N;
-
-  // точка на окружности (0° = вверх, по часовой стрелке)
-  function pt(r, deg){
-    const a = deg * Math.PI/180;
-    return [CX + r*Math.sin(a), CY - r*Math.cos(a)];
-  }
-
-  // --- строим сегменты + подписи ---
-  const wheelG = document.getElementById('wheel');
-  let markup = '';
-  for(let i=0;i<N;i++){
-    const s = SEGMENTS[i];
-    const a0 = i*SEG, a1 = (i+1)*SEG;
-    const [x0,y0] = pt(R, a0);
-    const [x1,y1] = pt(R, a1);
-    markup += `<path d="M${CX} ${CY} L${x0.toFixed(2)} ${y0.toFixed(2)} `
-            + `A${R} ${R} 0 0 1 ${x1.toFixed(2)} ${y1.toFixed(2)} Z" `
-            + `fill="${s.bg}" stroke="rgba(15,15,15,.10)" stroke-width="1.5"/>`;
-
-    const am = i*SEG + SEG/2;
-    const [lx,ly] = pt(RT, am);
-    const tilt = (am > 90 && am < 270) ? am - 180 : am; // держим текст «не вверх ногами»
-    markup += `<g transform="translate(${lx.toFixed(2)} ${ly.toFixed(2)}) rotate(${tilt.toFixed(2)})" `
-            + `text-anchor="middle">`
-            + `<text class="seg-emoji" y="-8" dominant-baseline="central">${s.icon}</text>`
-            + `<text class="seg-label" y="14" dominant-baseline="central" fill="${s.fg}">${s.label}</text>`
-            + `</g>`;
-  }
-  markup += `<circle cx="${CX}" cy="${CY}" r="52" fill="none" stroke="rgba(15,15,15,.10)" stroke-width="2"/>`;
-  wheelG.innerHTML = markup;
-
-  // --- рамка: золотое кольцо + лампочки ---
-  const rimG = document.getElementById('rim');
-  let rim = `<circle cx="${CX}" cy="${CY}" r="196" fill="none" stroke="url(#goldGrad)" stroke-width="9" filter="url(#softGlow)"/>`
-          + `<circle cx="${CX}" cy="${CY}" r="190.5" fill="none" stroke="rgba(15,15,15,.10)" stroke-width="2"/>`;
-  const DOTS = 24;
-  for(let k=0;k<DOTS;k++){
-    const [dx,dy] = pt(196, k*(360/DOTS));
-    const col = k%2 ? '#ffffff' : '#f97316';
-    rim += `<circle cx="${dx.toFixed(2)}" cy="${dy.toFixed(2)}" r="3.4" fill="${col}" filter="url(#softGlow)"/>`;
-  }
-  rimG.innerHTML = rim;
-
-  // --- элементы и состояние ---
-  const spinBtn    = document.getElementById('spinBtn');
-  const hub        = document.getElementById('hub');
-  const modal      = document.getElementById('modal');
-  const note       = document.getElementById('note');
-  const chips      = document.getElementById('chips');
-  const ticket     = document.getElementById('ticket');
-  const ticketCode = document.getElementById('ticketCode');
-  const winView    = document.getElementById('winView');
-  const okView     = document.getElementById('okView');
-  const dealForm   = document.getElementById('dealForm');
-  const dealInput  = document.getElementById('dealInput');
-  const submitBtn  = document.getElementById('submitBtn');
-  const formMsg    = document.getElementById('formMsg');
-
-  const SPIN_MS   = 5200;                    // совпадает с transition в CSS
-  const STORE_KEY = 'kursor_wheel_v3';       // «одно устройство — один прокрут»
-  let rotation = 0, spinning = false, hasWon = false, done = false, locked = false;
-  let revealTimer = null, pendingDeal = '';
-
-  const winPool = SEGMENTS.map((s,i)=> s.win ? i : -1).filter(i=>i>=0); // всегда наушники
-
-  // --- хранилище ---
-  function loadState(){ try{ return JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); }catch(e){ return null; } }
-  function saveState(dealId){ try{ localStorage.setItem(STORE_KEY, JSON.stringify({ dealId:dealId, done:true, ts:Date.now() })); }catch(e){} }
-
-  // если уже закрепили подарок — сразу показываем талон и блокируем колесо
-  const saved = loadState();
-  if(saved && saved.done){ pendingDeal = saved.dealId || ''; showWon(saved.dealId, false); }
-
-  // --- вращение ---
-  function spin(){
-    if(spinning || locked) return;
-    spinning = true;
-    spinBtn.disabled = true;
-    spinBtn.textContent = 'Крутим… 🎉';
-    hub.classList.remove('spin-pulse'); void hub.offsetWidth; hub.classList.add('spin-pulse');
-
-    const idx = winPool[Math.floor(Math.random()*winPool.length)];
-    const am = idx*SEG + SEG/2;
-    const targetMod = ((360 - am) % 360 + 360) % 360;
-    const currentMod = ((rotation % 360) + 360) % 360;
-    const delta = (targetMod - currentMod + 360) % 360;
-    const jitter = (Math.random()*2 - 1) * (SEG/2 - 9);
-    const turns = 6 + Math.floor(Math.random()*4);
-    rotation += turns*360 + delta + jitter;
-
-    wheelG.style.transform = `rotate(${rotation}deg)`;
-    playTicks();
-
-    clearTimeout(revealTimer);
-    revealTimer = setTimeout(finishSpin, SPIN_MS + 120);
-  }
-
-  function finishSpin(){
-    if(!spinning) return;
-    spinning = false;
-    hasWon = true;
-    chime();
-    confettiBurst();
-    openModal();
-    // кнопка теперь открывает окно с подарком (на случай, если его закрыли)
-    spinBtn.disabled = false;
-    spinBtn.textContent = 'Открыть подарок 🎧';
-  }
-  wheelG.addEventListener('transitionend', function(e){
-    if(e.propertyName === 'transform') finishSpin();
-  });
-
-  // клик по кнопке / ступице
-  function onAction(){
-    if(locked) return;
-    if(hasWon) openModal();
-    else spin();
-  }
-  spinBtn.addEventListener('click', onAction);
-  hub.addEventListener('click', onAction);
-
-  function openModal(){
-    winView.hidden = done; okView.hidden = !done;
-    modal.classList.add('show');
-    modal.setAttribute('aria-hidden','false');
-  }
-  function closeModal(){
-    modal.classList.remove('show');
-    modal.setAttribute('aria-hidden','true');
-    if(done) showWon(pendingDeal, true);
-  }
-  document.getElementById('closeBtn').addEventListener('click', closeModal);
-  modal.addEventListener('click', function(e){ if(e.target === modal) closeModal(); });
-
-  // --- отправка номера сделки в amoCRM (через нашу серверную функцию) ---
-  const ERR = {
-    bad_deal_id:      'Введите корректный номер сделки (только цифры).',
-    deal_not_found:   'Сделка с таким номером не найдена. Проверьте номер у менеджера.',
-    amo_auth:         'Не удалось обратиться к CRM. Сообщите менеджеру.',
-    server_not_configured: 'Сервис пока не настроен. Сообщите менеджеру.',
-    _default:         'Не удалось закрепить подарок. Попробуйте ещё раз.'
-  };
-  function setMsg(text, cls){ formMsg.textContent = text || ''; formMsg.className = 'form-msg' + (cls ? ' '+cls : ''); }
-
-  dealForm.addEventListener('submit', async function(e){
-    e.preventDefault();
-    const dealId = (dealInput.value || '').replace(/\D/g, '');
-    if(!dealId){ setMsg(ERR.bad_deal_id, 'err'); dealInput.focus(); return; }
-
-    const orig = submitBtn.textContent;
-    submitBtn.disabled = true; submitBtn.textContent = 'Отправляем…'; setMsg('', '');
-    try{
-      const r = await fetch(API_URL, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ dealId: dealId })
-      });
-      let data = {}; try{ data = await r.json(); }catch(e){}
-      if(r.ok && data && data.ok){
-        pendingDeal = dealId;
-        done = true;
-        saveState(dealId);
-        winView.hidden = true; okView.hidden = false;
-        confettiBurst(); chime();
-      }else{
-        setMsg(ERR[(data && data.error)] || ERR._default, 'err');
-        submitBtn.disabled = false; submitBtn.textContent = orig;
-      }
-    }catch(err){
-      setMsg('Нет связи с сервером. Проверьте интернет и попробуйте ещё раз.', 'err');
-      submitBtn.disabled = false; submitBtn.textContent = orig;
-    }
-  });
-
-  // показать талон + заблокировать колесо
-  function showWon(dealId, animate){
-    locked = true; hasWon = true; done = true;
-    ticketCode.textContent = 'Сделка #' + (dealId || '—');
-    spinBtn.style.display = 'none';
-    note.style.display = 'none';
-    chips.style.display = 'none';
-    ticket.hidden = false;
-    if(!animate){
-      wheelG.style.transition = 'none';
-      wheelG.style.transform = 'rotate(337.5deg)';
-    }
-  }
-
-  // --- звук (тихий, только после клика пользователя) ---
-  let actx = null;
-  function ac(){ try{ actx = actx || new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} return actx; }
-  function beep(freq, dur, gain){
-    const ctx = ac(); if(!ctx) return;
-    try{
-      const o = ctx.createOscillator(), g = ctx.createGain();
-      o.type='triangle'; o.frequency.value=freq; g.gain.value=gain;
-      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
-      o.connect(g); g.connect(ctx.destination);
-      o.start(); o.stop(ctx.currentTime + dur);
-    }catch(e){}
-  }
-  function playTicks(){
-    const NT = 26, DUR = 5000;
-    for(let k=0;k<NT;k++){
-      const f = k/(NT-1);
-      const t = DUR*(1 - Math.pow(1-f, 3));
-      setTimeout(()=>beep(1100 - 260*Math.sin(f*Math.PI), 0.05, 0.05), t);
-    }
-  }
-  function chime(){
-    beep(660,0.18,0.09);
-    setTimeout(()=>beep(880,0.18,0.09),120);
-    setTimeout(()=>beep(1174,0.30,0.09),240);
-  }
-
-  // --- конфетти ---
-  const cv = document.getElementById('confetti');
-  const ctx2 = cv.getContext('2d');
-  function sizeCanvas(){ cv.width = innerWidth; cv.height = innerHeight; }
-  sizeCanvas(); addEventListener('resize', sizeCanvas);
-
-  function confettiBurst(){
-    const colors = ['#facc15','#f97316','#007aff','#fbbf24','#0f0f0f'];
-    const px = innerWidth/2, py = innerHeight*0.42;
-    const P = [];
-    for(let i=0;i<170;i++){
-      const a = Math.random()*Math.PI*2, sp = 6 + Math.random()*10;
-      P.push({
-        x:px, y:py, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp - 7,
-        g:0.22 + Math.random()*0.12, s:6 + Math.random()*7,
-        rot:Math.random()*6.28, vr:(Math.random()-0.5)*0.45,
-        col:colors[i%colors.length], life:0, max:120 + Math.random()*45,
-        round:Math.random()<0.5
-      });
-    }
-    let raf;
-    function frame(){
-      ctx2.clearRect(0,0,cv.width,cv.height);
-      let alive=false;
-      for(const p of P){
-        if(p.life>p.max) continue;
-        alive=true; p.life++;
-        p.vy += p.g; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
-        ctx2.save();
-        ctx2.globalAlpha = Math.max(0, 1 - p.life/p.max);
-        ctx2.translate(p.x,p.y); ctx2.rotate(p.rot); ctx2.fillStyle = p.col;
-        if(p.round){ ctx2.beginPath(); ctx2.arc(0,0,p.s/2,0,6.28); ctx2.fill(); }
-        else ctx2.fillRect(-p.s/2,-p.s/2,p.s,p.s*0.6);
-        ctx2.restore();
-      }
-      if(alive) raf = requestAnimationFrame(frame);
-      else ctx2.clearRect(0,0,cv.width,cv.height);
-    }
-    cancelAnimationFrame(raf); frame();
-  }
-})();
-</script>
+  <script>
+    // Переносим параметры ссылки (?deal=…) на все страницы
+    (function(){
+      var qs = location.search;
+      if (!qs) return;
+      document.querySelectorAll('#cards a').forEach(function(a){ a.href = a.getAttribute('href') + qs; });
+    })();
+  </script>
 </body>
 </html>

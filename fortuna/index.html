@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#ffffff">
+<title>Колесо Фортуны · Kursor</title>
+<meta name="description" content="Крутите колесо фортуны Kursor и заберите подарок на мастер-классе!">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎡</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/brand.css">
+<style>
+  .wrap{
+    width:100%;max-width:520px;margin:0 auto;
+    padding:6px 18px calc(28px + env(safe-area-inset-bottom));
+    display:flex;flex-direction:column;align-items:center;
+  }
+  .pill{
+    display:inline-flex;align-items:center;gap:7px;margin:14px 0 10px;padding:7px 15px;border-radius:100px;
+    background:rgba(250,204,21,.16);border:1px solid rgba(245,158,11,.35);
+    color:#b45309;font-weight:700;font-size:12.5px;letter-spacing:.3px;max-width:100%;text-align:center;
+  }
+  .pill .dot{width:7px;height:7px;border-radius:50%;background:var(--orange);box-shadow:0 0 10px rgba(249,115,22,.6);flex:0 0 auto}
+  h1{text-align:center;font-weight:800;line-height:1.04;font-size:clamp(28px,8vw,40px);letter-spacing:-.5px;max-width:100%}
+  h1 .grad{background:linear-gradient(100deg,#f59e0b,var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{text-align:center;color:var(--ink-soft);font-size:clamp(14px,3.8vw,16px);margin-top:10px;max-width:340px}
+
+  .stage{position:relative;width:min(88vw,430px);aspect-ratio:1/1;margin:24px auto 8px;filter:drop-shadow(0 20px 42px rgba(15,15,15,.15))}
+  #wheelSvg{width:100%;height:100%;display:block;overflow:visible}
+  #wheel{transform-box:fill-box;transform-origin:center;transition:transform 5.2s cubic-bezier(.16,1,.3,1);will-change:transform}
+  .seg-label{font-family:'Manrope',sans-serif;font-weight:800;font-size:12.5px;letter-spacing:.2px;text-transform:uppercase}
+  .seg-emoji{font-size:30px}
+  #hub{cursor:pointer}
+  .hub-k{font-family:'Manrope',sans-serif;font-weight:800;font-size:34px;fill:#0f0f0f}
+  .spin-pulse{animation:hubpulse .6s ease}
+  @keyframes hubpulse{50%{transform:scale(.9)}}
+
+  .btn-spin{
+    width:min(88vw,430px);max-width:100%;margin-top:18px;padding:19px 24px;border-radius:18px;font-size:19px;
+    font-family:inherit;font-weight:800;cursor:pointer;border:none;color:#3a2400;
+    display:inline-flex;align-items:center;justify-content:center;gap:9px;user-select:none;touch-action:manipulation;
+    background:linear-gradient(100deg,var(--gold),var(--orange));
+    box-shadow:0 12px 28px rgba(249,115,22,.30),inset 0 1px 0 rgba(255,255,255,.45);
+    position:relative;overflow:hidden;transition:transform .12s ease,opacity .2s;
+  }
+  .btn-spin::after{content:"";position:absolute;top:0;left:-60%;width:45%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.6),transparent);transform:skewX(-20deg);animation:shine 3.4s ease-in-out infinite}
+  @keyframes shine{0%,100%{left:-60%}55%{left:130%}}
+  .btn-spin:not(:disabled):active{transform:scale(.97)}
+  .btn-spin:disabled{opacity:.72;cursor:default}
+  .btn-spin:disabled::after{display:none}
+  .note{margin-top:14px;color:var(--ink-mute);font-size:13px;font-weight:600;max-width:min(90vw,430px);text-align:center}
+
+  .chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:20px;width:100%;max-width:430px}
+  .chip{font-size:12.5px;font-weight:600;color:#3a3a3a;padding:8px 13px;border-radius:100px;background:#f6f6f6;border:1px solid var(--line)}
+
+  /* Инфоблок «мастер-класс / ученик» */
+  .mk-info{display:flex;flex-direction:column;gap:6px;margin:2px 0 16px}
+  .mk-row{font-size:14.5px;color:var(--ink);background:#fff7e6;border:1px solid rgba(245,158,11,.3);border-radius:12px;padding:9px 12px}
+  .mk-row b{font-weight:800}
+
+  /* Modal */
+  .modal{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(15,15,15,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  .modal.show{display:flex;animation:fade .3s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal-card{position:relative;width:100%;max-width:380px;text-align:center;background:#fff;border:1px solid rgba(245,158,11,.35);border-radius:26px;padding:34px 26px 26px;box-shadow:0 30px 70px rgba(15,15,15,.28);animation:pop .5s cubic-bezier(.2,1.2,.3,1) both}
+  @keyframes pop{from{transform:scale(.82) translateY(14px);opacity:0}to{transform:none;opacity:1}}
+  .modal-close{position:absolute;top:12px;right:14px;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#f3f3f3;color:#666;font-size:20px;line-height:1;cursor:pointer;font-family:inherit;z-index:2}
+  .modal-close:active{transform:scale(.94)}
+  .burst{font-size:70px;line-height:1;margin-bottom:8px;display:inline-block;animation:bob 2.4s ease-in-out infinite;filter:drop-shadow(0 8px 20px rgba(249,115,22,.35))}
+  @keyframes bob{50%{transform:translateY(-8px) rotate(-4deg)}}
+  .win-kicker{color:var(--orange-d);font-weight:800;font-size:14px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:8px}
+  .win-title{font-size:24px;font-weight:800;line-height:1.15;letter-spacing:-.3px}
+  .win-title .grad{background:linear-gradient(100deg,#f59e0b,var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .fire{color:var(--orange-d);font-weight:800;font-size:15px;margin:14px 0 6px;line-height:1.4}
+  .fire-sub{color:var(--ink-soft);font-size:13.5px;margin-bottom:18px}
+
+  /* Ticket */
+  .ticket{width:min(88vw,430px);margin:20px auto 0;text-align:center;background:#fffdf5;border:1.5px dashed rgba(245,158,11,.55);border-radius:22px;padding:24px 22px;box-shadow:0 16px 36px rgba(15,15,15,.10)}
+  .ticket-emoji{font-size:46px;line-height:1;margin-bottom:6px;filter:drop-shadow(0 6px 14px rgba(249,115,22,.35))}
+  .ticket-title{font-weight:800;font-size:18px;line-height:1.3;margin-bottom:14px}
+  .ticket-fire{color:var(--orange-d);font-weight:800;font-size:14.5px;margin-top:4px}
+
+  #confetti{position:fixed;inset:0;z-index:55;pointer-events:none}
+  @media (max-width:360px){.seg-emoji{font-size:26px}.seg-label{font-size:11px}}
+</style>
+</head>
+<body>
+
+  <header class="kx-top">
+    <img class="kx-logo" src="../assets/logo.png" alt="КУРСОР — школа программирования">
+    <div class="kx-hello" data-kx-greeting>Здравствуйте! 👋</div>
+  </header>
+
+  <main class="wrap">
+    <div class="pill"><span class="dot"></span>Подарок на мастер-классе</div>
+    <h1>Колесо <span class="grad">Фортуны</span></h1>
+    <p class="lead">Крутите колесо — вас ждёт гарантированный подарок 🎁</p>
+
+    <div class="stage">
+      <svg id="wheelSvg" viewBox="0 0 420 420" aria-label="Колесо фортуны">
+        <defs>
+          <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbbf24"/><stop offset="1" stop-color="#f97316"/></linearGradient>
+          <radialGradient id="hubGrad" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#fef08a"/><stop offset="55%" stop-color="#facc15"/><stop offset="100%" stop-color="#f59e0b"/></radialGradient>
+          <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="ptrShadow" x="-60%" y="-60%" width="220%" height="220%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.30"/></filter>
+        </defs>
+        <g id="wheel"></g>
+        <g id="rim"></g>
+        <g id="hub" role="button" aria-label="Крутить">
+          <circle cx="210" cy="210" r="47" fill="#ffffff"/>
+          <circle cx="210" cy="210" r="41" fill="url(#hubGrad)"/>
+          <text x="210" y="211" text-anchor="middle" dominant-baseline="central" class="hub-k">K</text>
+          <circle cx="210" cy="210" r="47" fill="none" stroke="url(#goldGrad)" stroke-width="3.5"/>
+        </g>
+        <g filter="url(#ptrShadow)">
+          <path d="M210 47 L192 8 Q210 -1 228 8 Z" fill="url(#goldGrad)" stroke="#ffffff" stroke-width="3"/>
+          <circle cx="210" cy="15" r="4" fill="#ffffff"/>
+        </g>
+      </svg>
+    </div>
+
+    <button class="btn-spin" id="spinBtn">Крутить колесо 🎡</button>
+    <div class="note" id="note">🎁 Один прокрут · подарок ждёт вас на мастер-классе</div>
+
+    <div class="chips" id="chips">
+      <span class="chip">🎧 Наушники</span>
+      <span class="chip">🎓 Сертификат</span>
+      <span class="chip">🎟️ Пробный урок</span>
+      <span class="chip">💯 Скидка</span>
+      <span class="chip">🖊️ Ручка</span>
+      <span class="chip">📒 Блокнот</span>
+    </div>
+
+    <!-- Талон после выигрыша -->
+    <div class="ticket" id="ticket" hidden>
+      <div class="ticket-emoji">🎧</div>
+      <div class="ticket-title">Наушники забронированы за вами</div>
+      <div class="mk-info">
+        <div class="mk-row" data-kx-needs-mk hidden>🗓 Мастер-класс: <b data-kx-mk></b></div>
+        <div class="mk-row" data-kx-needs-child hidden>🧒 Ученик: <b data-kx-child></b></div>
+      </div>
+      <div class="ticket-fire">🔥 Заберите подарок на мастер-классе — иначе он сгорит</div>
+    </div>
+  </main>
+
+  <!-- Win modal -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <button class="modal-close" id="closeBtn" aria-label="Закрыть">×</button>
+      <div class="burst">🎧</div>
+      <div class="win-kicker">Поздравляем!</div>
+      <h2 class="win-title">Вам выпали <span class="grad">беспроводные наушники</span></h2>
+      <div class="fire">🔥 Заберите подарок на мастер-классе — иначе он сгорит</div>
+      <div class="mk-info">
+        <div class="mk-row" data-kx-needs-mk hidden>🗓 Мастер-класс: <b data-kx-mk></b></div>
+        <div class="mk-row" data-kx-needs-child hidden>🧒 Ученик: <b data-kx-child></b></div>
+      </div>
+      <div class="fire-sub">Наушники ждут вас — просто приходите на встречу 🎧</div>
+      <button class="kx-btn" id="okBtn" style="width:100%">Понятно, приду! 🙌</button>
+    </div>
+  </div>
+
+  <canvas id="confetti"></canvas>
+
+  <script src="../assets/kursor.js"></script>
+  <script>
+  (function(){
+    "use strict";
+    var SEGMENTS = [
+      { icon:'🎧', label:'Наушники', win:true, bg:'#ffffff', fg:'#0f0f0f' },
+      { icon:'🎓', label:'Сертификат',         bg:'#fef3c7', fg:'#0f0f0f' },
+      { icon:'💯', label:'−20%',               bg:'#ffffff', fg:'#0f0f0f' },
+      { icon:'🎟️', label:'Урок',               bg:'#ffedd5', fg:'#0f0f0f' },
+      { icon:'🎒', label:'Мерч',               bg:'#ffffff', fg:'#0f0f0f' },
+      { icon:'⭐', label:'−15%',               bg:'#fef3c7', fg:'#0f0f0f' },
+      { icon:'🖊️', label:'Ручка',              bg:'#ffffff', fg:'#0f0f0f' },
+      { icon:'📒', label:'Блокнот',            bg:'#ffedd5', fg:'#0f0f0f' }
+    ];
+    var CX=210, CY=210, R=190, RT=124, N=SEGMENTS.length, SEG=360/N;
+    function pt(r,deg){ var a=deg*Math.PI/180; return [CX+r*Math.sin(a), CY-r*Math.cos(a)]; }
+
+    var wheelG=document.getElementById('wheel'), markup='';
+    for(var i=0;i<N;i++){
+      var s=SEGMENTS[i], a0=i*SEG, a1=(i+1)*SEG, p0=pt(R,a0), p1=pt(R,a1);
+      markup+='<path d="M'+CX+' '+CY+' L'+p0[0].toFixed(2)+' '+p0[1].toFixed(2)+' A'+R+' '+R+' 0 0 1 '+p1[0].toFixed(2)+' '+p1[1].toFixed(2)+' Z" fill="'+s.bg+'" stroke="rgba(15,15,15,.10)" stroke-width="1.5"/>';
+      var am=i*SEG+SEG/2, lp=pt(RT,am), tilt=(am>90&&am<270)?am-180:am;
+      markup+='<g transform="translate('+lp[0].toFixed(2)+' '+lp[1].toFixed(2)+') rotate('+tilt.toFixed(2)+')" text-anchor="middle">'
+            + '<text class="seg-emoji" y="-8" dominant-baseline="central">'+s.icon+'</text>'
+            + '<text class="seg-label" y="14" dominant-baseline="central" fill="'+s.fg+'">'+s.label+'</text></g>';
+    }
+    markup+='<circle cx="'+CX+'" cy="'+CY+'" r="52" fill="none" stroke="rgba(15,15,15,.10)" stroke-width="2"/>';
+    wheelG.innerHTML=markup;
+
+    var rimG=document.getElementById('rim');
+    var rim='<circle cx="'+CX+'" cy="'+CY+'" r="196" fill="none" stroke="url(#goldGrad)" stroke-width="9" filter="url(#softGlow)"/>'
+          + '<circle cx="'+CX+'" cy="'+CY+'" r="190.5" fill="none" stroke="rgba(15,15,15,.10)" stroke-width="2"/>';
+    for(var k=0;k<24;k++){ var d=pt(196,k*15), col=k%2?'#ffffff':'#f97316'; rim+='<circle cx="'+d[0].toFixed(2)+'" cy="'+d[1].toFixed(2)+'" r="3.4" fill="'+col+'" filter="url(#softGlow)"/>'; }
+    rimG.innerHTML=rim;
+
+    var spinBtn=document.getElementById('spinBtn'), hub=document.getElementById('hub'), modal=document.getElementById('modal');
+    var note=document.getElementById('note'), chips=document.getElementById('chips'), ticket=document.getElementById('ticket');
+    var SPIN_MS=5200, STORE_KEY='kursor_wheel_v4';
+    var rotation=0, spinning=false, locked=false, revealTimer=null;
+    var winPool=SEGMENTS.map(function(s,i){return s.win?i:-1;}).filter(function(i){return i>=0;});
+
+    function loadState(){ try{ return JSON.parse(localStorage.getItem(STORE_KEY)||'null'); }catch(e){ return null; } }
+    function saveState(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify({done:true, ts:Date.now()})); }catch(e){} }
+
+    var saved=loadState();
+    if(saved && saved.done) showWon(false);
+
+    function spin(){
+      if(spinning||locked) return;
+      spinning=true; spinBtn.disabled=true; spinBtn.textContent='Крутим… 🎉';
+      hub.classList.remove('spin-pulse'); void hub.offsetWidth; hub.classList.add('spin-pulse');
+      var idx=winPool[Math.floor(Math.random()*winPool.length)];
+      var am=idx*SEG+SEG/2;
+      var targetMod=((360-am)%360+360)%360, currentMod=((rotation%360)+360)%360;
+      var delta=(targetMod-currentMod+360)%360;
+      var jitter=(Math.random()*2-1)*(SEG/2-9), turns=6+Math.floor(Math.random()*4);
+      rotation+=turns*360+delta+jitter;
+      wheelG.style.transform='rotate('+rotation+'deg)';
+      playTicks();
+      clearTimeout(revealTimer); revealTimer=setTimeout(finishSpin, SPIN_MS+120);
+    }
+    function finishSpin(){
+      if(!spinning) return;
+      spinning=false; locked=true;
+      saveState();
+      if(window.KX && KX.tag) KX.tag('fortuna');   // ставим тег на сделку
+      chime(); confettiBurst();
+      openModal();
+    }
+    wheelG.addEventListener('transitionend', function(e){ if(e.propertyName==='transform') finishSpin(); });
+
+    function openModal(){ modal.classList.add('show'); modal.setAttribute('aria-hidden','false'); }
+    function closeModal(){ modal.classList.remove('show'); modal.setAttribute('aria-hidden','true'); showWon(true); }
+    function showWon(animate){
+      locked=true;
+      spinBtn.style.display='none'; note.style.display='none'; chips.style.display='none';
+      ticket.hidden=false;
+      if(window.KX && KX.render) KX.render();
+      if(!animate){ wheelG.style.transition='none'; wheelG.style.transform='rotate(337.5deg)'; }
+    }
+    spinBtn.addEventListener('click', spin);
+    hub.addEventListener('click', spin);
+    document.getElementById('okBtn').addEventListener('click', closeModal);
+    document.getElementById('closeBtn').addEventListener('click', closeModal);
+    modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
+
+    /* звук */
+    var actx=null;
+    function ac(){ try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} return actx; }
+    function beep(f,d,g){ var c=ac(); if(!c) return; try{ var o=c.createOscillator(),n=c.createGain(); o.type='triangle'; o.frequency.value=f; n.gain.value=g; n.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+d); o.connect(n); n.connect(c.destination); o.start(); o.stop(c.currentTime+d); }catch(e){} }
+    function playTicks(){ for(var k=0;k<26;k++){ (function(k){ var f=k/25, t=5000*(1-Math.pow(1-f,3)); setTimeout(function(){ beep(1100-260*Math.sin(f*Math.PI),0.05,0.05); }, t); })(k); } }
+    function chime(){ beep(660,0.18,0.09); setTimeout(function(){beep(880,0.18,0.09);},120); setTimeout(function(){beep(1174,0.30,0.09);},240); }
+
+    /* конфетти */
+    var cv=document.getElementById('confetti'), ctx2=cv.getContext('2d');
+    function sizeCanvas(){ cv.width=innerWidth; cv.height=innerHeight; } sizeCanvas(); addEventListener('resize', sizeCanvas);
+    function confettiBurst(){
+      var colors=['#facc15','#f97316','#007aff','#fbbf24','#0f0f0f'], px=innerWidth/2, py=innerHeight*0.42, P=[];
+      for(var i=0;i<170;i++){ var a=Math.random()*Math.PI*2, sp=6+Math.random()*10;
+        P.push({x:px,y:py,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-7,g:0.22+Math.random()*0.12,s:6+Math.random()*7,rot:Math.random()*6.28,vr:(Math.random()-0.5)*0.45,col:colors[i%colors.length],life:0,max:120+Math.random()*45,round:Math.random()<0.5}); }
+      var raf;
+      function frame(){ ctx2.clearRect(0,0,cv.width,cv.height); var alive=false;
+        for(var j=0;j<P.length;j++){ var p=P[j]; if(p.life>p.max) continue; alive=true; p.life++; p.vy+=p.g; p.vx*=0.99; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
+          ctx2.save(); ctx2.globalAlpha=Math.max(0,1-p.life/p.max); ctx2.translate(p.x,p.y); ctx2.rotate(p.rot); ctx2.fillStyle=p.col;
+          if(p.round){ ctx2.beginPath(); ctx2.arc(0,0,p.s/2,0,6.28); ctx2.fill(); } else ctx2.fillRect(-p.s/2,-p.s/2,p.s,p.s*0.6); ctx2.restore(); }
+        if(alive) raf=requestAnimationFrame(frame); else ctx2.clearRect(0,0,cv.width,cv.height);
+      }
+      cancelAnimationFrame(raf); frame();
+    }
+  })();
+  </script>
+</body>
+</html>
