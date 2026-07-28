@@ -93,13 +93,10 @@
           Ваш браузер не поддерживает встроенное видео.
         </video>
       </div>
-      <div class="v-progress" aria-hidden="true"><div class="v-bar" id="bar"></div></div>
-      <div class="v-status" id="status">Просмотрено: 0%</div>
       <div class="mk-info">
         <div class="mk-row" id="mkRow" hidden>🗓 Мастер-класс: <b id="mkVal"></b></div>
         <div class="mk-row" id="childRow" hidden>🧒 Ученик: <b id="childVal"></b></div>
       </div>
-      <div class="done-note" id="doneNote" hidden>✅ Просмотр засчитан — ждём вас на мастер-классе</div>
     </section>
 
     <!-- ЭКРАН 3: срок истёк -->
@@ -124,10 +121,10 @@
 
     var gate=$("gate"), videoView=$("videoView"), expiredView=$("expiredView");
     var gateForm=$("gateForm"), dealInput=$("dealInput"), enterBtn=$("enterBtn"), gateMsg=$("gateMsg");
-    var hello=$("hello"), player=$("player"), srcEl=$("videoSrc"), bar=$("bar"), status=$("status");
-    var timerBox=$("timerBox"), countdown=$("countdown"), doneNote=$("doneNote");
+    var hello=$("hello"), player=$("player"), srcEl=$("videoSrc");
+    var timerBox=$("timerBox"), countdown=$("countdown");
 
-    var deal="", maxPct=0, lastSent=-1, tagged=false, timerId=null, reportId=null;
+    var deal="", maxPct=0, lastSent=-1, timerId=null, reportId=null;
 
     // префилл номера из ссылки (если менеджер добавил ?deal=)
     var urlDeal = digits(new URLSearchParams(location.search).get("deal") || new URLSearchParams(location.search).get("utm_term") || "");
@@ -205,26 +202,28 @@
       var pct = Math.round(maxPct*100);
       if (!force && pct - lastSent < 3) return;
       lastSent = pct;
+      var payload = JSON.stringify({ deal: deal, event:"video", percent: pct });
+      // при закрытии/уходе со страницы — sendBeacon: % доставляется даже после закрытия видео
+      if (force && navigator.sendBeacon) {
+        try { navigator.sendBeacon(API_TAG, new Blob([payload], { type: "application/json" })); return; } catch(e){}
+      }
       try {
-        fetch(API_TAG, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ deal: deal, event:"video", percent: pct }), keepalive:true });
+        fetch(API_TAG, { method:"POST", headers:{"Content-Type":"application/json"}, body: payload, keepalive:true });
       } catch(e){}
     }
     function attachTracking(){
       player.addEventListener("timeupdate", function(){
         if (!player.duration || isNaN(player.duration)) return;
         var pct = player.currentTime / player.duration;
-        if (pct > maxPct) maxPct = pct;
-        var shown = Math.round(maxPct*100);
-        bar.style.width = shown + "%";
-        status.textContent = "Просмотрено: " + shown + "%";
-        if (maxPct >= THRESHOLD && !tagged) { tagged = true; doneNote.hidden = false; }
+        if (pct > maxPct) maxPct = pct;   // трекинг молча, без индикатора на экране
       });
       player.addEventListener("pause", function(){ report(true); });
-      player.addEventListener("ended", function(){ maxPct = 1; bar.style.width="100%"; status.textContent="Просмотрено: 100%"; doneNote.hidden=false; report(true); });
+      player.addEventListener("ended", function(){ maxPct = 1; report(true); });
       document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "hidden") report(true); });
       window.addEventListener("pagehide", function(){ report(true); });
+      window.addEventListener("beforeunload", function(){ report(true); });
       // периодически во время проигрывания
-      reportId = setInterval(function(){ if (!player.paused && !player.ended) report(false); }, 20000);
+      reportId = setInterval(function(){ if (!player.paused && !player.ended) report(false); }, 15000);
     }
   })();
   </script>
