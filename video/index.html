@@ -93,10 +93,6 @@
           Ваш браузер не поддерживает встроенное видео.
         </video>
       </div>
-      <div class="mk-info">
-        <div class="mk-row" id="mkRow" hidden>🗓 Мастер-класс: <b id="mkVal"></b></div>
-        <div class="mk-row" id="childRow" hidden>🧒 Ученик: <b id="childVal"></b></div>
-      </div>
     </section>
 
     <!-- ЭКРАН 3: срок истёк -->
@@ -168,8 +164,6 @@
       var name = firstName(data.parentName);
       hello.hidden = false;
       hello.innerHTML = (name ? ("Здравствуйте, " + name + "!") : "Здравствуйте!") + ' 👋';
-      if (data.childName) { $("childVal").textContent = data.childName; $("childRow").hidden = false; }
-      if (data.mkTime)   { $("mkVal").textContent = data.mkTime; $("mkRow").hidden = false; }
       // видео
       srcEl.src = VIDEO_SRC; player.load();
       // таймер
