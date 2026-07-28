@@ -1,0 +1,19 @@
+{
+  "name": "kursor-diagnostika",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Диагностика познавательных способностей — KURSOR",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "validate": "node scripts/validate.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "check": "npm run validate && npm run smoke && npm run build"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1",
+    "jsdom": "^27.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}

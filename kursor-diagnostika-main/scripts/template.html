@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Диагностика способностей — KURSOR</title>
+<meta name="description" content="Диагностика познавательных способностей ребёнка. Школа программирования KURSOR.">
+<meta property="og:title" content="Диагностика способностей — KURSOR">
+<meta property="og:description" content="Занимает около 12 минут. Результат разбирает специалист на встрече.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#EEF2F1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Шрифт подключается НЕ блокирующе: media="print" браузер не ждёт, а onload
+     переключает на all, когда файл доедет. Обычный rel=stylesheet — это
+     render-blocking запрос: пока сервер шрифтов не ответил, отрисовка ждёт.
+     Полностью офлайн разницы почти нет (запрос падает сразу), но на медленной
+     мобильной сети ожидание реальное. В font-family прописаны запасные шрифты,
+     без Inter вёрстка не едет — проверено скриншотом без сети. -->
+<link rel="stylesheet" media="print" onload="this.media='all'; this.onload=null"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<noscript><link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"></noscript>
+<style>
+  html, body { margin: 0; padding: 0; background: #EEF2F1; }
+  body { -webkit-text-size-adjust: 100%; overscroll-behavior-y: none; }
+  #root { min-height: 100vh; min-height: 100dvh; }
+  /* экран до загрузки скрипта */
+  #boot {
+    position: fixed; inset: 0; display: flex; align-items: center;
+    justify-content: center; background: #EEF2F1; z-index: 9;
+    font: 400 14px/1.5 Inter, system-ui, sans-serif; color: #6C7F84;
+    letter-spacing: .12em; text-transform: uppercase;
+  }
+</style>
+<script>
+/* Возрастная палитра до загрузки основного скрипта — иначе экран-заглушка
+   мигнёт «взрослым» бирюзовым фоном на детской версии.
+   Цвета — это paper из PALETTES в diagnostika_kursor.jsx, менять парой. */
+(function () {
+  try {
+    var p = new URLSearchParams(
+      (location.search || "").replace(/^\?/, "") + "&" +
+      (location.hash || "").replace(/^#/, "")
+    );
+    var a = parseInt(p.get("age"), 10);
+    var bg = a <= 8 ? "#EFF6F1" : a <= 11 ? "#FAF3ED" : "#EEF2F1";
+    if (!isFinite(a)) bg = "#FAF3ED";           /* без параметров — средняя версия */
+    document.documentElement.style.background = bg;
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute("content", bg);
+    var s = document.createElement("style");
+    s.textContent = "body,#boot{background:" + bg + "}";
+    document.head.appendChild(s);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body>
+<div id="root"></div>
+<div id="boot">KURSOR</div>
+<script src="../assets/kursor.js"></script>
+<script>
+/*BUNDLE*/
+var b = document.getElementById("boot");
+if (b) b.remove();
+</script>
+<noscript>
+  <div style="padding:40px;font:400 16px/1.6 system-ui,sans-serif;color:#0E2A33;max-width:520px;margin:0 auto">
+    <b>Нужен включённый JavaScript.</b><br>
+    Диагностика — интерактивная, без JavaScript она не работает.
+  </div>
+</noscript>
+</body>
+</html>

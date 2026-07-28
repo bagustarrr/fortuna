@@ -31,6 +31,8 @@ module.exports = async function handler(req, res) {
 
   const childKey = process.env.AMO_FIELD_CHILD || '';
   const mkKey = process.env.AMO_FIELD_MK || '';
+  const ageKey = process.env.AMO_FIELD_CHILD_AGE || '';
+  const addrKey = process.env.AMO_FIELD_MK_ADDR || '';
 
   function readField(cfs, key) {
     if (!key) return '';
@@ -60,6 +62,8 @@ module.exports = async function handler(req, res) {
 
     const childName = readField(lead.custom_fields_values, childKey);
     const mkTime = readField(lead.custom_fields_values, mkKey);
+    const childAge = readField(lead.custom_fields_values, ageKey);
+    const mkAddress = readField(lead.custom_fields_values, addrKey);
 
     // имя родителя — из основного контакта сделки
     let parentName = '';
@@ -75,7 +79,7 @@ module.exports = async function handler(req, res) {
       } catch (e) { /* контакт не получили — не страшно */ }
     }
 
-    return res.status(200).json({ ok: true, parentName, childName, mkTime });
+    return res.status(200).json({ ok: true, parentName, childName, childAge, mkTime, mkAddress });
   } catch (e) {
     return res.status(200).json({ ok: false, error: 'network' });
   }

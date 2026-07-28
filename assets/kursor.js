@@ -19,7 +19,10 @@
     // значения из ссылки (если менеджер их добавил) — необязательны
     client: qs.get("client") || qs.get("name") || "",
     child:  qs.get("child")  || "",
+    childAge: qs.get("age") || "",
+    childGender: qs.get("gender") || "",
     mk:     qs.get("mk")     || qs.get("time") || "",
+    mkAddress: qs.get("addr") || qs.get("address") || "",
     ready:  false
   };
   window.KX = KX;
@@ -43,15 +46,17 @@
 
   // Подтягиваем данные из amoCRM по номеру сделки (если чего-то не хватает).
   async function personalize(){
-    if (KX.deal && (!KX.client || !KX.child || !KX.mk)) {
+    if (KX.deal && (!KX.client || !KX.child || !KX.mk || !KX.childAge)) {
       try {
         var r = await fetch("/api/lead?deal=" + encodeURIComponent(KX.deal));
         if (r.ok) {
           var d = await r.json();
           if (d && d.ok) {
-            KX.client = KX.client || firstName(d.parentName) || "";
-            KX.child  = KX.child  || d.childName || "";
-            KX.mk     = KX.mk     || d.mkTime   || "";
+            KX.client    = KX.client    || firstName(d.parentName) || "";
+            KX.child     = KX.child     || d.childName || "";
+            KX.childAge  = KX.childAge  || d.childAge  || "";
+            KX.mk        = KX.mk        || d.mkTime    || "";
+            KX.mkAddress = KX.mkAddress || d.mkAddress || "";
           }
         }
       } catch (e) { /* нет сети / не задеплоено — работаем на том, что есть в ссылке */ }

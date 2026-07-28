@@ -8,3 +8,4 @@ node_modules/
 _legacy/
 react.prod.js
 video/*.mp4
+.build/
