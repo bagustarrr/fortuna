@@ -48,6 +48,21 @@ module.exports = async function handler(req, res) {
   const base = `https://${SUB}.amocrm.ru/api/v4`;
   const headers = { 'Authorization': `Bearer ${TOKEN}`, 'Content-Type': 'application/json' };
 
+  // поле можно задать числовым ID или НАЗВАНИЕ (тогда найдём ID в списке полей сделок)
+  async function resolveFieldId(key) {
+    const k = String(key || '').trim();
+    if (!k) return null;
+    if (/^\d+$/.test(k)) return Number(k);
+    try {
+      const r = await fetch(`${base}/leads/custom_fields?limit=250`, { headers });
+      if (!r.ok) return null;
+      const d = await r.json();
+      const fields = (d && d._embedded && d._embedded.custom_fields) || [];
+      const f = fields.find(x => String(x.name || '').toLowerCase() === k.toLowerCase());
+      return f ? f.id : null;
+    } catch (e) { return null; }
+  }
+
   try {
     // текущие теги, чтобы не затереть
     const getRes = await fetch(`${base}/leads/${deal}`, { headers });
@@ -63,9 +78,9 @@ module.exports = async function handler(req, res) {
     if (!already) {
       patch._embedded = { tags: existing.map(t => ({ id: t.id })).concat([{ name: TAG }]) };
     }
-    const doneFieldId = DONE_FIELDS[event];
+    const doneFieldId = await resolveFieldId(DONE_FIELDS[event]);
     if (doneFieldId) {
-      patch.custom_fields_values = [{ field_id: Number(doneFieldId), values: [{ value: true }] }];
+      patch.custom_fields_values = [{ field_id: doneFieldId, values: [{ value: true }] }];
     }
 
     if (patch._embedded || patch.custom_fields_values) {
@@ -74,7 +89,7 @@ module.exports = async function handler(req, res) {
       });
       if (!patchRes.ok) return res.status(502).json({ ok: false, error: 'amo_patch_failed' });
     }
-    return res.status(200).json({ ok: true, deal, tag: TAG, field: doneFieldId ? Number(doneFieldId) : null });
+    return res.status(200).json({ ok: true, deal, tag: TAG, field: doneFieldId || null });
   } catch (e) {
     return res.status(502).json({ ok: false, error: 'network' });
   }
