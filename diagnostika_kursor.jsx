@@ -1663,7 +1663,7 @@ function Result({ child, data }) {
             }}
           >
             <span style={{ color: C.muted, fontSize: 13 }}>Ваша встреча</span>
-            <span style={{ fontWeight: 600 }}>27 июля, 12:00</span>
+            <span style={{ fontWeight: 600 }}>{(typeof window !== "undefined" && window.KX && window.KX.mk) ? window.KX.mk : "уточнит менеджер"}</span>
             <span style={{ color: C.muted, fontSize: 13.5 }}>· ул. Жумабека Ташенова, 8</span>
           </div>
           <Btn onClick={() => {}}>Подтвердить, что придём</Btn>
