@@ -35,7 +35,10 @@
   .msg{margin-top:12px;font-size:13.5px;font-weight:600;min-height:18px;text-align:center;color:var(--danger)}
   .gate-hint{margin-top:10px;font-size:12px;color:var(--ink-mute);text-align:center}
 
-  /* Таймер */
+  /* Активация + таймер */
+  .activated{text-align:center;margin-top:8px}
+  .act-title{font-weight:800;font-size:clamp(20px,5.6vw,26px);letter-spacing:-.3px}
+  .act-sub{color:var(--ink-mute);font-size:13.5px;margin-top:3px}
   .timer{
     margin:14px auto 0;padding:10px 16px;border-radius:100px;font-weight:700;font-size:14.5px;
     background:rgba(250,204,21,.14);border:1px solid rgba(245,158,11,.35);color:#b45309;text-align:center;
@@ -86,6 +89,10 @@
 
     <!-- ЭКРАН 2: видео -->
     <section id="videoView" hidden>
+      <div class="activated">
+        <div class="act-title">Видео активировано 🎉</div>
+        <div class="act-sub">Спасибо за покупку</div>
+      </div>
       <div class="timer" id="timerBox">Доступ закроется через <b id="countdown">--:--:--</b></div>
       <div class="video-frame">
         <video id="player" class="player" controls controlsList="nodownload" oncontextmenu="return false" playsinline preload="metadata">
