@@ -1,14 +1,6 @@
-// Серверная функция Vercel: отдаёт данные клиента по номеру сделки amoCRM.
-// Нужна для персонализации страниц (приветствие по имени, имя ребёнка, время МК).
-// Токен читается только из окружения; наружу токен НЕ отдаётся.
-//
-// GET /api/lead?deal=123456  →  { ok, parentName, childName, mkTime }
-//
-// Переменные окружения:
-//   AMO_SUBDOMAIN, AMO_TOKEN — как в /api/tag
-//   AMO_FIELD_CHILD — имя ИЛИ id поля сделки с именем ребёнка (например: "Имя ребёнка")
-//   AMO_FIELD_MK    — имя ИЛИ id поля сделки со временем мастер-класса (например: "Мастер-класс")
-// Если поля не заданы/не найдены — вернём пустые значения, страница покажет общий текст.
+// /api/lead?deal=123 — данные клиента для персонализации.
+// { ok, parentName, childName, childAge, mkTime, mkAddress }
+// Имя/возраст ребёнка обычно на КОНТАКТЕ, время/адрес МК — на сделке.
 
 module.exports = async function handler(req, res) {
   const allowOrigin = process.env.ALLOWED_ORIGIN;
@@ -20,7 +12,6 @@ module.exports = async function handler(req, res) {
 
   const SUB = process.env.AMO_SUBDOMAIN;
   const TOKEN = process.env.AMO_TOKEN;
-  // при отсутствии настроек отвечаем 200/ok:false — страница просто покажет общий текст
   if (!SUB || !TOKEN) return res.status(200).json({ ok: false, error: 'server_not_configured' });
 
   const deal = String((req.query && req.query.deal) || '').replace(/\D/g, '');
@@ -29,10 +20,12 @@ module.exports = async function handler(req, res) {
   const base = `https://${SUB}.amocrm.ru/api/v4`;
   const headers = { 'Authorization': `Bearer ${TOKEN}` };
 
-  const childKey = process.env.AMO_FIELD_CHILD || '';
+  // по умолчанию — реальные названия полей этого аккаунта (можно переопределить в env)
+  const childKey = process.env.AMO_FIELD_CHILD || 'Имя/Имена ребенка';
+  const ageKey = process.env.AMO_FIELD_CHILD_AGE || 'Возраст ребенка';
   const mkKey = process.env.AMO_FIELD_MK || '';
-  const ageKey = process.env.AMO_FIELD_CHILD_AGE || '';
   const addrKey = process.env.AMO_FIELD_MK_ADDR || '';
+  const TZ = process.env.AMO_TIMEZONE || 'Asia/Almaty'; // Астана UTC+5
 
   function readField(cfs, key) {
     if (!key) return '';
@@ -42,12 +35,12 @@ module.exports = async function handler(req, res) {
     );
     if (!f || !Array.isArray(f.values) || !f.values.length) return '';
     let v = f.values[0].value;
-    // поле-дата приходит unix-таймстампом — форматируем в читаемый вид
+    // дата/время приходит unix-таймстампом — форматируем в таймзоне Астаны
     if (typeof v === 'number' || /^\d{9,}$/.test(String(v))) {
       const d = new Date(Number(v) * 1000);
       if (!isNaN(d)) {
         try {
-          return d.toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+          return d.toLocaleString('ru-RU', { timeZone: TZ, day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
         } catch (e) { return String(v); }
       }
     }
@@ -57,16 +50,17 @@ module.exports = async function handler(req, res) {
   try {
     const lr = await fetch(`${base}/leads/${deal}?with=contacts`, { headers });
     if (lr.status === 401 || lr.status === 403) return res.status(200).json({ ok: false, error: 'amo_auth' });
+    if (lr.status === 404) return res.status(404).json({ ok: false, error: 'deal_not_found' });
     if (!lr.ok) return res.status(200).json({ ok: false, error: 'lead_' + lr.status });
     const lead = await lr.json();
+    const leadCfs = lead.custom_fields_values || [];
 
-    const childName = readField(lead.custom_fields_values, childKey);
-    const mkTime = readField(lead.custom_fields_values, mkKey);
-    const childAge = readField(lead.custom_fields_values, ageKey);
-    const mkAddress = readField(lead.custom_fields_values, addrKey);
+    // МК — из полей СДЕЛКИ
+    const mkTime = readField(leadCfs, mkKey);
+    const mkAddress = readField(leadCfs, addrKey);
 
-    // имя родителя — из основного контакта сделки
-    let parentName = '';
+    // контакт: имя родителя + поля ребёнка
+    let parentName = '', contactCfs = [];
     const contacts = (lead._embedded && lead._embedded.contacts) || [];
     const main = contacts.find(c => c.is_main) || contacts[0];
     if (main && main.id) {
@@ -75,9 +69,14 @@ module.exports = async function handler(req, res) {
         if (cr.ok) {
           const c = await cr.json();
           parentName = c.first_name || c.name || '';
+          contactCfs = c.custom_fields_values || [];
         }
       } catch (e) { /* контакт не получили — не страшно */ }
     }
+
+    // ребёнок: сначала с контакта, если нет — со сделки
+    const childName = readField(contactCfs, childKey) || readField(leadCfs, childKey);
+    const childAge = readField(contactCfs, ageKey) || readField(leadCfs, ageKey);
 
     return res.status(200).json({ ok: true, parentName, childName, childAge, mkTime, mkAddress });
   } catch (e) {
