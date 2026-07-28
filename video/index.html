@@ -15,107 +15,217 @@
   .wrap{width:100%;max-width:760px;margin:0 auto;padding:6px 18px calc(28px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center}
   h1{text-align:center;font-weight:800;line-height:1.05;font-size:clamp(24px,6.5vw,34px);letter-spacing:-.5px;margin-top:12px;max-width:100%}
   h1 .grad{background:linear-gradient(100deg,#f59e0b,var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent}
-  .lead{text-align:center;color:var(--ink-soft);font-size:clamp(14px,3.8vw,16px);margin-top:8px;max-width:420px}
+  .lead{text-align:center;color:var(--ink-soft);font-size:clamp(14px,3.8vw,16px);margin-top:8px;max-width:440px}
 
-  .video-frame{
-    width:100%;max-width:720px;margin:20px auto 0;background:#000;border-radius:20px;overflow:hidden;
-    aspect-ratio:16/9;box-shadow:0 20px 45px rgba(15,15,15,.18);
+  /* Гейт */
+  .gate-form{display:flex;flex-direction:column;gap:11px;width:100%;max-width:360px;margin:22px auto 0}
+  .deal-input{
+    width:100%;padding:16px 18px;border-radius:14px;font-size:17px;font-family:inherit;font-weight:700;
+    border:1.5px solid var(--line);background:#fff;color:var(--ink);text-align:center;letter-spacing:.5px;outline:none;
+    transition:border-color .15s,box-shadow .15s;
   }
-  .player{display:block;width:100%;height:100%;object-fit:contain;background:#000}
+  .deal-input:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(249,115,22,.15)}
+  .deal-input::placeholder{color:#bbb;font-weight:600;letter-spacing:0}
+  .btn-go{
+    width:100%;padding:16px;border-radius:14px;font-size:17px;font-weight:800;color:#3a2400;border:none;cursor:pointer;font-family:inherit;
+    background:linear-gradient(100deg,var(--gold),var(--orange));box-shadow:0 10px 24px rgba(249,115,22,.28);transition:transform .12s,opacity .2s;
+  }
+  .btn-go:active{transform:scale(.98)}
+  .btn-go:disabled{opacity:.7;cursor:default}
+  .msg{margin-top:12px;font-size:13.5px;font-weight:600;min-height:18px;text-align:center;color:var(--danger)}
+  .gate-hint{margin-top:10px;font-size:12px;color:var(--ink-mute);text-align:center}
 
+  /* Таймер */
+  .timer{
+    margin:14px auto 0;padding:10px 16px;border-radius:100px;font-weight:700;font-size:14.5px;
+    background:rgba(250,204,21,.14);border:1px solid rgba(245,158,11,.35);color:#b45309;text-align:center;
+  }
+  .timer b{font-variant-numeric:tabular-nums;font-weight:800}
+  .timer.urgent{background:rgba(220,38,38,.10);border-color:rgba(220,38,38,.35);color:var(--danger)}
+
+  .video-frame{width:100%;max-width:720px;margin:14px auto 0;background:#000;border-radius:20px;overflow:hidden;aspect-ratio:16/9;box-shadow:0 20px 45px rgba(15,15,15,.18)}
+  .player{display:block;width:100%;height:100%;object-fit:contain;background:#000}
   .v-progress{width:100%;max-width:720px;height:8px;border-radius:100px;background:#eee;overflow:hidden;margin:14px auto 0}
   .v-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--gold),var(--orange));transition:width .3s ease}
-  .v-status{margin-top:8px;color:var(--ink-mute);font-size:13px;font-weight:600}
+  .v-status{margin-top:8px;color:var(--ink-mute);font-size:13px;font-weight:600;text-align:center}
 
-  .done-card{
-    width:100%;max-width:520px;margin:20px auto 0;text-align:center;background:#fffdf5;
-    border:1.5px dashed rgba(245,158,11,.55);border-radius:22px;padding:24px 22px;box-shadow:0 16px 36px rgba(15,15,15,.10);
-  }
-  .done-emoji{font-size:48px;line-height:1;margin-bottom:6px;filter:drop-shadow(0 6px 14px rgba(34,197,94,.3))}
-  .done-title{font-weight:800;font-size:20px;margin-bottom:12px}
-  .done-sub{color:var(--ink-soft);font-size:14.5px;margin-top:8px}
-  .mk-info{display:flex;flex-direction:column;gap:6px;margin-top:10px}
-  .mk-row{font-size:14.5px;color:var(--ink);background:#fff7e6;border:1px solid rgba(245,158,11,.3);border-radius:12px;padding:9px 12px}
+  .mk-info{display:flex;flex-direction:column;gap:6px;margin:16px auto 0;width:100%;max-width:520px}
+  .mk-row{font-size:14.5px;color:var(--ink);background:#fff7e6;border:1px solid rgba(245,158,11,.3);border-radius:12px;padding:9px 12px;text-align:center}
   .mk-row b{font-weight:800}
+  .done-note{margin:14px auto 0;color:var(--ok);font-weight:800;font-size:15px;text-align:center}
 
-  .watched-btn{margin-top:16px;max-width:520px;width:100%}
+  /* Истёк */
+  .expired{text-align:center;margin-top:40px;max-width:420px}
+  .exp-emoji{font-size:60px;line-height:1}
+  .expired h2{font-size:24px;font-weight:800;margin:10px 0 8px}
+  .expired p{color:var(--ink-soft);font-size:15px;line-height:1.5}
+
+  .spinner{display:inline-block;width:18px;height:18px;border:2.5px solid rgba(255,255,255,.5);border-top-color:#3a2400;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-3px}
+  @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 
   <header class="kx-top">
     <img class="kx-logo" src="../assets/logo.png" alt="КУРСОР — школа программирования">
-    <div class="kx-hello" data-kx-greeting>Здравствуйте! 👋</div>
+    <div class="kx-hello" id="hello" hidden>Здравствуйте! 👋</div>
   </header>
 
   <main class="wrap">
-    <h1>Видео-презентация <span class="grad">KURSOR</span></h1>
-    <p class="lead">Посмотрите короткое видео — а после ждём вас на мастер-классе 👋</p>
+    <!-- ЭКРАН 1: ввод номера сделки -->
+    <section id="gate">
+      <h1>Видео-презентация <span class="grad">KURSOR</span></h1>
+      <p class="lead">Введите номер вашей сделки, чтобы открыть видео. Номер вам прислал менеджер.</p>
+      <form class="gate-form" id="gateForm" novalidate>
+        <input class="deal-input" id="dealInput" inputmode="numeric" pattern="[0-9]*" placeholder="Номер сделки" autocomplete="off" aria-label="Номер сделки">
+        <button class="btn-go" id="enterBtn" type="submit">Открыть видео →</button>
+      </form>
+      <div class="msg" id="gateMsg"></div>
+      <div class="gate-hint">Видео доступно 24 часа с момента первого открытия.</div>
+    </section>
 
-    <div class="video-frame">
-      <video id="player" class="player" controls controlsList="nodownload" oncontextmenu="return false" playsinline preload="metadata">
-        <source id="videoSrc" src="https://pub-b883488408014edc847550ef886303bf.r2.dev/nurmashvideo.mp4" type="video/mp4">
-        Ваш браузер не поддерживает встроенное видео.
-      </video>
-    </div>
-
-    <div class="v-progress" aria-hidden="true"><div class="v-bar" id="bar"></div></div>
-    <div class="v-status" id="status">Просмотрено: 0%</div>
-
-    <div class="done-card" id="doneCard" hidden>
-      <div class="done-emoji">✅</div>
-      <div class="done-title">Спасибо, что посмотрели!</div>
-      <div class="mk-info">
-        <div class="mk-row" data-kx-needs-mk hidden>🗓 Мастер-класс: <b data-kx-mk></b></div>
-        <div class="mk-row" data-kx-needs-child hidden>🧒 Ученик: <b data-kx-child></b></div>
+    <!-- ЭКРАН 2: видео -->
+    <section id="videoView" hidden>
+      <div class="timer" id="timerBox">Доступ закроется через <b id="countdown">--:--:--</b></div>
+      <div class="video-frame">
+        <video id="player" class="player" controls controlsList="nodownload" oncontextmenu="return false" playsinline preload="metadata">
+          <source id="videoSrc" src="" type="video/mp4">
+          Ваш браузер не поддерживает встроенное видео.
+        </video>
       </div>
-      <div class="done-sub">Ждём вас на мастер-классе — живое знакомство со школой 👋</div>
-    </div>
+      <div class="v-progress" aria-hidden="true"><div class="v-bar" id="bar"></div></div>
+      <div class="v-status" id="status">Просмотрено: 0%</div>
+      <div class="mk-info">
+        <div class="mk-row" id="mkRow" hidden>🗓 Мастер-класс: <b id="mkVal"></b></div>
+        <div class="mk-row" id="childRow" hidden>🧒 Ученик: <b id="childVal"></b></div>
+      </div>
+      <div class="done-note" id="doneNote" hidden>✅ Просмотр засчитан — ждём вас на мастер-классе</div>
+    </section>
 
-    <button class="kx-btn ghost watched-btn" id="watchedBtn">Я досмотрел ✅</button>
+    <!-- ЭКРАН 3: срок истёк -->
+    <section id="expiredView" class="expired" hidden>
+      <div class="exp-emoji">⏳</div>
+      <h2>Срок доступа истёк</h2>
+      <p>Видео было доступно 24 часа. Напишите менеджеру, чтобы открыть его снова.</p>
+    </section>
   </main>
 
-  <script src="../assets/kursor.js"></script>
   <script>
   (function(){
     "use strict";
-    // Если видео на другом хостинге — поменяйте src здесь (или тег <source> выше).
     var VIDEO_SRC = "https://pub-b883488408014edc847550ef886303bf.r2.dev/nurmashvideo.mp4";
+    var API_VIDEO = "/api/video";
+    var API_TAG = "/api/tag";
+    var THRESHOLD = 0.7; // 70% — «просмотрел»
 
-    var player = document.getElementById('player');
-    var bar = document.getElementById('bar');
-    var status = document.getElementById('status');
-    var doneCard = document.getElementById('doneCard');
-    var watchedBtn = document.getElementById('watchedBtn');
-    var srcEl = document.getElementById('videoSrc');
-    if (srcEl && srcEl.getAttribute('src') !== VIDEO_SRC) { srcEl.src = VIDEO_SRC; player.load(); }
+    var $ = function(id){ return document.getElementById(id); };
+    function digits(s){ return String(s||"").replace(/\D/g,""); }
+    function firstName(s){ return String(s||"").trim().split(/\s+/)[0] || ""; }
 
-    var WATCH_THRESHOLD = 0.7;   // считаем «посмотрел» при 70% досмотра
-    var maxPct = 0, tagged = false;
+    var gate=$("gate"), videoView=$("videoView"), expiredView=$("expiredView");
+    var gateForm=$("gateForm"), dealInput=$("dealInput"), enterBtn=$("enterBtn"), gateMsg=$("gateMsg");
+    var hello=$("hello"), player=$("player"), srcEl=$("videoSrc"), bar=$("bar"), status=$("status");
+    var timerBox=$("timerBox"), countdown=$("countdown"), doneNote=$("doneNote");
 
-    function markWatched(){
-      if (tagged) return;
-      tagged = true;
-      if (window.KX && KX.tag) KX.tag('video');   // ставим тег на сделку
-      if (window.KX && KX.render) KX.render();
-      doneCard.hidden = false;
-      watchedBtn.hidden = true;
-      try{ doneCard.scrollIntoView({behavior:'smooth', block:'center'}); }catch(e){}
+    var deal="", maxPct=0, lastSent=-1, tagged=false, timerId=null, reportId=null;
+
+    // префилл номера из ссылки (если менеджер добавил ?deal=)
+    var urlDeal = digits(new URLSearchParams(location.search).get("deal") || new URLSearchParams(location.search).get("utm_term") || "");
+    if (urlDeal) dealInput.value = urlDeal;
+
+    var ERR = {
+      bad_deal: "Введите номер сделки цифрами.",
+      deal_not_found: "Сделка не найдена. Проверьте номер у менеджера.",
+      amo_auth: "Не удалось обратиться к CRM. Сообщите менеджеру.",
+      server_not_configured: "Сервис не настроен. Сообщите менеджеру.",
+      _default: "Не удалось открыть видео. Попробуйте ещё раз."
+    };
+
+    gateForm.addEventListener("submit", async function(e){
+      e.preventDefault();
+      var d = digits(dealInput.value);
+      if (!d) { gateMsg.textContent = ERR.bad_deal; dealInput.focus(); return; }
+      var orig = enterBtn.innerHTML;
+      enterBtn.disabled = true; enterBtn.innerHTML = '<span class="spinner"></span> Открываем…'; gateMsg.textContent = "";
+      try {
+        var r = await fetch(API_VIDEO, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ deal: d }) });
+        var data = {}; try { data = await r.json(); } catch(e){}
+        if (!(r.ok && data && data.ok)) { gateMsg.textContent = ERR[data && data.error] || ERR._default; enterBtn.disabled=false; enterBtn.innerHTML=orig; return; }
+        deal = d;
+        if (data.locked) { showExpired(); return; }
+        openVideo(data);
+      } catch(err) {
+        gateMsg.textContent = "Нет связи с сервером. Попробуйте ещё раз."; enterBtn.disabled=false; enterBtn.innerHTML=orig;
+      }
+    });
+
+    function showExpired(){
+      gate.hidden = true; videoView.hidden = true; expiredView.hidden = false;
+      if (timerId) clearInterval(timerId);
+      try { player.pause(); } catch(e){}
     }
 
-    player.addEventListener('timeupdate', function(){
-      if (!player.duration || isNaN(player.duration)) return;
-      var pct = player.currentTime / player.duration;
-      if (pct > maxPct) maxPct = pct;
-      var shown = Math.round(maxPct * 100);
-      bar.style.width = shown + '%';
-      status.textContent = 'Просмотрено: ' + shown + '%';
-      if (maxPct >= WATCH_THRESHOLD) markWatched();
-    });
-    player.addEventListener('ended', function(){ maxPct = 1; bar.style.width='100%'; status.textContent='Просмотрено: 100%'; markWatched(); });
+    function openVideo(data){
+      gate.hidden = true; expiredView.hidden = true; videoView.hidden = false;
+      // приветствие + данные
+      var name = firstName(data.parentName);
+      hello.hidden = false;
+      hello.innerHTML = (name ? ("Здравствуйте, " + name + "!") : "Здравствуйте!") + ' 👋';
+      if (data.childName) { $("childVal").textContent = data.childName; $("childRow").hidden = false; }
+      if (data.mkTime)   { $("mkVal").textContent = data.mkTime; $("mkRow").hidden = false; }
+      // видео
+      srcEl.src = VIDEO_SRC; player.load();
+      // таймер
+      startCountdown(data.expiry);
+      // трекинг
+      attachTracking();
+    }
 
-    // Ручная подстраховка (и вариант для случаев, когда авто-трекинг не сработал)
-    watchedBtn.addEventListener('click', markWatched);
+    function fmt(sec){
+      sec = Math.max(0, Math.floor(sec));
+      var h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
+      function p(x){ return String(x).padStart(2,"0"); }
+      return p(h)+":"+p(m)+":"+p(s);
+    }
+    function startCountdown(expiry){
+      if (!expiry) { timerBox.style.display = "none"; return; }
+      function tick(){
+        var left = expiry - Math.floor(Date.now()/1000);
+        countdown.textContent = fmt(left);
+        if (left <= 3600) timerBox.classList.add("urgent"); // меньше часа — красный
+        if (left <= 0) { clearInterval(timerId); report(true); showExpired(); }
+      }
+      tick();
+      timerId = setInterval(tick, 1000);
+    }
+
+    // --- отправка % в amoCRM ---
+    function report(force){
+      if (!deal) return;
+      var pct = Math.round(maxPct*100);
+      if (!force && pct - lastSent < 3) return;
+      lastSent = pct;
+      try {
+        fetch(API_TAG, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ deal: deal, event:"video", percent: pct }), keepalive:true });
+      } catch(e){}
+    }
+    function attachTracking(){
+      player.addEventListener("timeupdate", function(){
+        if (!player.duration || isNaN(player.duration)) return;
+        var pct = player.currentTime / player.duration;
+        if (pct > maxPct) maxPct = pct;
+        var shown = Math.round(maxPct*100);
+        bar.style.width = shown + "%";
+        status.textContent = "Просмотрено: " + shown + "%";
+        if (maxPct >= THRESHOLD && !tagged) { tagged = true; doneNote.hidden = false; }
+      });
+      player.addEventListener("pause", function(){ report(true); });
+      player.addEventListener("ended", function(){ maxPct = 1; bar.style.width="100%"; status.textContent="Просмотрено: 100%"; doneNote.hidden=false; report(true); });
+      document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "hidden") report(true); });
+      window.addEventListener("pagehide", function(){ report(true); });
+      // периодически во время проигрывания
+      reportId = setInterval(function(){ if (!player.paused && !player.ended) report(false); }, 20000);
+    }
   })();
   </script>
 </body>

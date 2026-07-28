@@ -1,16 +1,12 @@
-// Серверная функция Vercel: отмечает целевое действие на сделке в amoCRM.
-// После действия: (1) ставит да/нет поле «Покрутил/Посмотрел/Прошёл» = ДА (чекбокс),
-//                 (2) вешает тег (для наглядности; можно игнорировать).
+// /api/tag — отмечает целевое действие на сделке в amoCRM.
+// POST { deal, event, percent? }
+//   event: "video" | "fortuna" | "diagnostic"
+//   percent (только для video): текущий % просмотра → пишем максимум в поле «Просмотрено видео, %».
+// Когда действие выполнено (для video: percent >= порога; для остальных: любой вызов):
+//   ставит поле-флаг «Посмотрел видео / Покрутил колесо / Прошёл диагностику» = ДА и вешает тег.
 //
-// Тело запроса (JSON): { "deal": "123456", "event": "video" | "fortuna" | "diagnostic" }
-//
-// Переменные окружения:
-//   AMO_SUBDOMAIN, AMO_TOKEN — доступ к amoCRM
-//   AMO_FIELD_DONE_VIDEO      — ID поля-флага «Посмотрел видео»
-//   AMO_FIELD_DONE_FORTUNA    — ID поля-флага «Покрутил колесо»
-//   AMO_FIELD_DONE_DIAGNOSTIC — ID поля-флага «Прошёл диагностику»
-//   (необязательно) AMO_TAG_VIDEO / AMO_TAG_FORTUNA / AMO_TAG_DIAGNOSTIC — тексты тегов
-//   (необязательно) ALLOWED_ORIGIN
+// Названия полей по умолчанию совпадают с /api/setup — доп. настройка env не нужна.
+// Переопределить можно: AMO_FIELD_DONE_VIDEO/FORTUNA/DIAGNOSTIC, AMO_FIELD_VIDEO_PCT, AMO_VIDEO_THRESHOLD.
 
 module.exports = async function handler(req, res) {
   const allowOrigin = process.env.ALLOWED_ORIGIN;
@@ -32,15 +28,19 @@ module.exports = async function handler(req, res) {
     diagnostic: process.env.AMO_TAG_DIAGNOSTIC || 'Прошёл диагностику'
   };
   const DONE_FIELDS = {
-    video:      process.env.AMO_FIELD_DONE_VIDEO,
-    fortuna:    process.env.AMO_FIELD_DONE_FORTUNA,
-    diagnostic: process.env.AMO_FIELD_DONE_DIAGNOSTIC
+    video:      process.env.AMO_FIELD_DONE_VIDEO      || 'Посмотрел видео',
+    fortuna:    process.env.AMO_FIELD_DONE_FORTUNA    || 'Покрутил колесо',
+    diagnostic: process.env.AMO_FIELD_DONE_DIAGNOSTIC || 'Прошёл диагностику'
   };
+  const PCT_FIELD = process.env.AMO_FIELD_VIDEO_PCT || 'Просмотрено видео, %';
+  const THRESHOLD = Number(process.env.AMO_VIDEO_THRESHOLD) || 70;
 
   let body = req.body;
   if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
   const deal = String((body && (body.deal != null ? body.deal : body.dealId)) || '').replace(/\D/g, '');
   const event = String((body && body.event) || '').toLowerCase();
+  const hasPct = body && body.percent != null && body.percent !== '';
+  const percent = hasPct ? Math.max(0, Math.min(100, Math.round(Number(body.percent) || 0))) : null;
   const TAG = TAGS[event];
   if (!deal) return res.status(400).json({ ok: false, error: 'bad_deal' });
   if (!TAG)  return res.status(400).json({ ok: false, error: 'bad_event' });
@@ -48,7 +48,6 @@ module.exports = async function handler(req, res) {
   const base = `https://${SUB}.amocrm.ru/api/v4`;
   const headers = { 'Authorization': `Bearer ${TOKEN}`, 'Content-Type': 'application/json' };
 
-  // поле можно задать числовым ID или НАЗВАНИЕ (тогда найдём ID в списке полей сделок)
   async function resolveFieldId(key) {
     const k = String(key || '').trim();
     if (!k) return null;
@@ -57,39 +56,53 @@ module.exports = async function handler(req, res) {
       const r = await fetch(`${base}/leads/custom_fields?limit=250`, { headers });
       if (!r.ok) return null;
       const d = await r.json();
-      const fields = (d && d._embedded && d._embedded.custom_fields) || [];
+      const fields = (d._embedded && d._embedded.custom_fields) || [];
       const f = fields.find(x => String(x.name || '').toLowerCase() === k.toLowerCase());
       return f ? f.id : null;
     } catch (e) { return null; }
   }
+  function rawById(cfs, id) {
+    const f = (cfs || []).find(c => String(c.field_id) === String(id));
+    return (f && f.values && f.values.length) ? f.values[0].value : '';
+  }
+
+  // выполнено ли действие: с percent — по порогу; без percent — считаем выполненным (fortuna/diagnostic)
+  const isDone = (percent == null) ? true : (percent >= THRESHOLD);
 
   try {
-    // текущие теги, чтобы не затереть
     const getRes = await fetch(`${base}/leads/${deal}`, { headers });
     if (getRes.status === 401 || getRes.status === 403) return res.status(502).json({ ok: false, error: 'amo_auth' });
     if (getRes.status === 404) return res.status(404).json({ ok: false, error: 'deal_not_found' });
     if (!getRes.ok) return res.status(502).json({ ok: false, error: 'amo_get_failed' });
-
     const lead = await getRes.json();
-    const existing = (lead && lead._embedded && Array.isArray(lead._embedded.tags)) ? lead._embedded.tags : [];
-    const already = existing.some(t => (t.name || '').toLowerCase() === TAG.toLowerCase());
+    const cfs = lead.custom_fields_values || [];
+    const existingTags = (lead._embedded && Array.isArray(lead._embedded.tags)) ? lead._embedded.tags : [];
+
+    const cfv = [];
+
+    // % просмотра (только video, только рост)
+    if (percent != null && event === 'video') {
+      const pctId = await resolveFieldId(PCT_FIELD);
+      if (pctId) {
+        const cur = Number(rawById(cfs, pctId)) || 0;
+        cfv.push({ field_id: pctId, values: [{ value: Math.max(cur, percent) }] });
+      }
+    }
 
     const patch = {};
-    if (!already) {
-      patch._embedded = { tags: existing.map(t => ({ id: t.id })).concat([{ name: TAG }]) };
+    if (isDone) {
+      const doneId = await resolveFieldId(DONE_FIELDS[event]);
+      if (doneId) cfv.push({ field_id: doneId, values: [{ value: true }] });
+      const already = existingTags.some(t => (t.name || '').toLowerCase() === TAG.toLowerCase());
+      if (!already) patch._embedded = { tags: existingTags.map(t => ({ id: t.id })).concat([{ name: TAG }]) };
     }
-    const doneFieldId = await resolveFieldId(DONE_FIELDS[event]);
-    if (doneFieldId) {
-      patch.custom_fields_values = [{ field_id: doneFieldId, values: [{ value: true }] }];
-    }
+    if (cfv.length) patch.custom_fields_values = cfv;
 
     if (patch._embedded || patch.custom_fields_values) {
-      const patchRes = await fetch(`${base}/leads/${deal}`, {
-        method: 'PATCH', headers, body: JSON.stringify(patch)
-      });
+      const patchRes = await fetch(`${base}/leads/${deal}`, { method: 'PATCH', headers, body: JSON.stringify(patch) });
       if (!patchRes.ok) return res.status(502).json({ ok: false, error: 'amo_patch_failed' });
     }
-    return res.status(200).json({ ok: true, deal, tag: TAG, field: doneFieldId || null });
+    return res.status(200).json({ ok: true, deal, percent, done: isDone });
   } catch (e) {
     return res.status(502).json({ ok: false, error: 'network' });
   }
