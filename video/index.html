@@ -91,7 +91,6 @@
     <section id="videoView" hidden>
       <div class="activated">
         <div class="act-title">Видео активировано 🎉</div>
-        <div class="act-sub">Спасибо за покупку</div>
       </div>
       <div class="timer" id="timerBox">Доступ закроется через <b id="countdown">--:--:--</b></div>
       <div class="video-frame">
@@ -170,7 +169,7 @@
       // приветствие + данные
       var name = firstName(data.parentName);
       hello.hidden = false;
-      hello.innerHTML = (name ? ("Здравствуйте, " + name + "!") : "Здравствуйте!") + ' 👋';
+      hello.innerHTML = (name ? ("Спасибо за покупку, " + name) : "Спасибо за покупку") + ' 👋';
       // видео
       srcEl.src = VIDEO_SRC; player.load();
       // таймер
