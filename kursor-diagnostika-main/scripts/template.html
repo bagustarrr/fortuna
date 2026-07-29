@@ -9,7 +9,7 @@
 <meta property="og:title" content="Диагностика способностей — KURSOR">
 <meta property="og:description" content="Занимает около 12 минут. Результат разбирает специалист на встрече.">
 <meta property="og:type" content="website">
-<meta name="theme-color" content="#EEF2F1">
+<meta name="theme-color" content="#FFFAF3">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- Шрифт подключается НЕ блокирующе: media="print" браузер не ждёт, а onload
@@ -17,20 +17,20 @@
      render-blocking запрос: пока сервер шрифтов не ответил, отрисовка ждёт.
      Полностью офлайн разницы почти нет (запрос падает сразу), но на медленной
      мобильной сети ожидание реальное. В font-family прописаны запасные шрифты,
-     без Inter вёрстка не едет — проверено скриншотом без сети. -->
+     без Manrope вёрстка сохраняет корректную геометрию. -->
 <link rel="stylesheet" media="print" onload="this.media='all'; this.onload=null"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
 <noscript><link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"></noscript>
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"></noscript>
 <style>
-  html, body { margin: 0; padding: 0; background: #EEF2F1; }
+  html, body { margin: 0; padding: 0; background: #FFFAF3; }
   body { -webkit-text-size-adjust: 100%; overscroll-behavior-y: none; }
   #root { min-height: 100vh; min-height: 100dvh; }
   /* экран до загрузки скрипта */
   #boot {
     position: fixed; inset: 0; display: flex; align-items: center;
-    justify-content: center; background: #EEF2F1; z-index: 9;
-    font: 400 14px/1.5 Inter, system-ui, sans-serif; color: #6C7F84;
+    justify-content: center; background: #FFFAF3; z-index: 9;
+    font: 800 14px/1.5 Manrope, system-ui, sans-serif; color: #D85600;
     letter-spacing: .12em; text-transform: uppercase;
   }
 </style>
@@ -45,8 +45,8 @@
       (location.hash || "").replace(/^#/, "")
     );
     var a = parseInt(p.get("age"), 10);
-    var bg = a <= 8 ? "#EFF6F1" : a <= 11 ? "#FAF3ED" : "#EEF2F1";
-    if (!isFinite(a)) bg = "#FAF3ED";           /* без параметров — средняя версия */
+    var bg = a <= 8 ? "#FFFCF5" : a <= 11 ? "#FFFAF3" : "#FFF8EF";
+    if (!isFinite(a)) bg = "#FFFAF3";           /* без параметров — средняя версия */
     document.documentElement.style.background = bg;
     var m = document.querySelector('meta[name="theme-color"]');
     if (m) m.setAttribute("content", bg);
@@ -67,7 +67,7 @@ var b = document.getElementById("boot");
 if (b) b.remove();
 </script>
 <noscript>
-  <div style="padding:40px;font:400 16px/1.6 system-ui,sans-serif;color:#0E2A33;max-width:520px;margin:0 auto">
+  <div style="padding:40px;font:600 16px/1.6 Manrope,system-ui,sans-serif;color:#17130F;max-width:520px;margin:0 auto">
     <b>Нужен включённый JavaScript.</b><br>
     Диагностика — интерактивная, без JavaScript она не работает.
   </div>

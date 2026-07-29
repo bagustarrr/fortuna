@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#fffaf3">
 <title>Видео-презентация · Kursor</title>
 <meta name="description" content="Видео-презентация школы программирования Kursor">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
@@ -12,41 +12,45 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/brand.css">
 <style>
-  .wrap{width:100%;max-width:760px;margin:0 auto;padding:6px 18px calc(28px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center}
-  h1{text-align:center;font-weight:800;line-height:1.05;font-size:clamp(24px,6.5vw,34px);letter-spacing:-.5px;margin-top:12px;max-width:100%}
-  h1 .grad{background:linear-gradient(100deg,#f59e0b,var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent}
-  .lead{text-align:center;color:var(--ink-soft);font-size:clamp(14px,3.8vw,16px);margin-top:8px;max-width:440px}
+  .wrap{width:100%;max-width:860px;margin:0 auto;padding:clamp(28px,6vw,58px) 18px calc(42px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center}
+  #gate{width:100%;max-width:520px;text-align:center;background:rgba(255,255,255,.78);border:1px solid rgba(255,255,255,.92);border-radius:30px;padding:clamp(26px,6vw,46px);box-shadow:var(--shadow);backdrop-filter:blur(18px);animation:kxreveal .65s var(--ease) both}
+  .video-kicker{width:62px;height:62px;margin:0 auto 18px;display:grid;place-items:center;border-radius:20px;background:linear-gradient(145deg,#eef1ff,#dce5ff);font-size:29px;box-shadow:inset 0 0 0 1px rgba(91,124,250,.10),0 12px 24px rgba(91,124,250,.10)}
+  h1{text-align:center;font-weight:800;line-height:1.05;font-size:clamp(28px,6.5vw,43px);letter-spacing:-.045em;max-width:100%}
+  h1 .grad{background:linear-gradient(110deg,var(--orange-d),var(--orange),var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{text-align:center;color:var(--ink-soft);font-size:clamp(14px,3.8vw,16px);line-height:1.6;margin:12px auto 0;max-width:420px}
 
   /* Гейт */
-  .gate-form{display:flex;flex-direction:column;gap:11px;width:100%;max-width:360px;margin:22px auto 0}
+  .gate-form{display:flex;flex-direction:column;gap:11px;width:100%;max-width:380px;margin:25px auto 0}
   .deal-input{
-    width:100%;padding:16px 18px;border-radius:14px;font-size:17px;font-family:inherit;font-weight:700;
-    border:1.5px solid var(--line);background:#fff;color:var(--ink);text-align:center;letter-spacing:.5px;outline:none;
-    transition:border-color .15s,box-shadow .15s;
+    width:100%;padding:17px 18px;border-radius:17px;font-size:17px;font-family:inherit;font-weight:700;
+    border:1.5px solid var(--line);background:rgba(255,255,255,.92);color:var(--ink);text-align:center;letter-spacing:.5px;outline:none;
+    transition:border-color .2s,box-shadow .2s,transform .2s var(--ease);
   }
-  .deal-input:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(249,115,22,.15)}
+  .deal-input:focus{border-color:var(--orange);box-shadow:0 0 0 4px rgba(255,122,24,.11);transform:translateY(-1px)}
   .deal-input::placeholder{color:#bbb;font-weight:600;letter-spacing:0}
   .btn-go{
-    width:100%;padding:16px;border-radius:14px;font-size:17px;font-weight:800;color:#3a2400;border:none;cursor:pointer;font-family:inherit;
-    background:linear-gradient(100deg,var(--gold),var(--orange));box-shadow:0 10px 24px rgba(249,115,22,.28);transition:transform .12s,opacity .2s;
+    width:100%;padding:17px;border-radius:17px;font-size:17px;font-weight:800;color:#281600;border:none;cursor:pointer;font-family:inherit;
+    background:linear-gradient(110deg,var(--gold),var(--orange));box-shadow:0 13px 28px rgba(255,122,24,.24);transition:transform .2s var(--ease),box-shadow .2s,opacity .2s;
   }
+  .btn-go:hover{transform:translateY(-2px);box-shadow:0 17px 34px rgba(255,122,24,.30)}
   .btn-go:active{transform:scale(.98)}
   .btn-go:disabled{opacity:.7;cursor:default}
   .msg{margin-top:12px;font-size:13.5px;font-weight:600;min-height:18px;text-align:center;color:var(--danger)}
   .gate-hint{margin-top:10px;font-size:12px;color:var(--ink-mute);text-align:center}
 
   /* Активация + таймер */
-  .activated{text-align:center;margin-top:8px}
-  .act-title{font-weight:800;font-size:clamp(20px,5.6vw,26px);letter-spacing:-.3px}
+  #videoView{width:100%;animation:kxreveal .65s var(--ease) both}
+  .activated{text-align:center;margin-top:0}
+  .act-title{font-weight:800;font-size:clamp(24px,5.6vw,34px);letter-spacing:-.04em}
   .act-sub{color:var(--ink-mute);font-size:13.5px;margin-top:3px}
   .timer{
-    margin:14px auto 0;padding:10px 16px;border-radius:100px;font-weight:700;font-size:14.5px;
-    background:rgba(250,204,21,.14);border:1px solid rgba(245,158,11,.35);color:#b45309;text-align:center;
+    width:max-content;max-width:100%;margin:14px auto 0;padding:10px 16px;border-radius:100px;font-weight:700;font-size:14px;
+    background:rgba(255,255,255,.72);border:1px solid rgba(255,122,24,.18);box-shadow:var(--shadow-soft);color:var(--orange-d);text-align:center;
   }
   .timer b{font-variant-numeric:tabular-nums;font-weight:800}
   .timer.urgent{background:rgba(220,38,38,.10);border-color:rgba(220,38,38,.35);color:var(--danger)}
 
-  .video-frame{width:100%;max-width:720px;margin:14px auto 0;background:#000;border-radius:20px;overflow:hidden;aspect-ratio:16/9;box-shadow:0 20px 45px rgba(15,15,15,.18)}
+  .video-frame{width:100%;max-width:820px;margin:22px auto 0;background:#090909;border:6px solid rgba(255,255,255,.9);border-radius:27px;overflow:hidden;aspect-ratio:16/9;box-shadow:0 28px 70px rgba(38,24,12,.22)}
   .player{display:block;width:100%;height:100%;object-fit:contain;background:#000}
   .v-progress{width:100%;max-width:720px;height:8px;border-radius:100px;background:#eee;overflow:hidden;margin:14px auto 0}
   .v-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--gold),var(--orange));transition:width .3s ease}
@@ -58,18 +62,19 @@
   .done-note{margin:14px auto 0;color:var(--ok);font-weight:800;font-size:15px;text-align:center}
 
   /* Истёк */
-  .expired{text-align:center;margin-top:40px;max-width:420px}
+  .expired{text-align:center;margin-top:20px;max-width:430px;background:rgba(255,255,255,.78);border:1px solid rgba(255,255,255,.9);border-radius:30px;padding:42px 30px;box-shadow:var(--shadow);animation:kxreveal .6s var(--ease) both}
   .exp-emoji{font-size:60px;line-height:1}
   .expired h2{font-size:24px;font-weight:800;margin:10px 0 8px}
   .expired p{color:var(--ink-soft);font-size:15px;line-height:1.5}
 
   .spinner{display:inline-block;width:18px;height:18px;border:2.5px solid rgba(255,255,255,.5);border-top-color:#3a2400;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-3px}
   @keyframes spin{to{transform:rotate(360deg)}}
+  @media(max-width:520px){#gate{padding:28px 20px}.wrap{padding-top:24px}.video-frame{border-width:3px;border-radius:20px}}
 </style>
 </head>
 <body>
 
-  <header class="kx-top">
+  <header class="kx-top kx-reveal">
     <img class="kx-logo" src="../assets/logo.png" alt="КУРСОР — школа программирования">
     <div class="kx-hello" id="hello" hidden>Здравствуйте! 👋</div>
   </header>
@@ -77,8 +82,9 @@
   <main class="wrap">
     <!-- ЭКРАН 1: ввод номера сделки -->
     <section id="gate">
+      <div class="video-kicker">▶️</div>
       <h1>Видео-презентация <span class="grad">KURSOR</span></h1>
-      <p class="lead">Введите номер вашей сделки, чтобы открыть видео. Номер вам прислал менеджер.</p>
+      <p class="lead">Откройте короткое знакомство со школой. Номер доступа уже есть в сообщении вашего менеджера.</p>
       <form class="gate-form" id="gateForm" novalidate>
         <input class="deal-input" id="dealInput" inputmode="numeric" pattern="[0-9]*" placeholder="Номер сделки" autocomplete="off" aria-label="Номер сделки">
         <button class="btn-go" id="enterBtn" type="submit">Открыть видео →</button>

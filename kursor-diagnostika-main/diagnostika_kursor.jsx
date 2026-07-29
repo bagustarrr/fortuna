@@ -28,28 +28,28 @@ import React, { useState, useEffect, useRef } from "react";
    ============================================================ */
 const PALETTES = {
   junior: {
-    ink: "#10322A", ink2: "#1C4A3E", paper: "#EFF6F1", card: "#FFFFFF",
-    amber: "#E0973A", teal: "#248055", tealSoft: "#DFF1E7",
-    muted: "#6E8579", line: "#D6E7DC", ok: "#3E8E68", bad: "#C2543E",
-    okSoft: "#DCEFE4", badSoft: "#FBEDE9",
-    cube: ["#1B6844", "#248055", "#4FA57C"],
-    shapes: ["#2E8B60", "#E0973A", "#10322A"],
+    ink: "#17130F", ink2: "#4D453E", paper: "#FFFCF5", card: "#FFFFFF",
+    amber: "#FFB020", teal: "#A33B00", tealSoft: "#FFF0D9",
+    muted: "#887E74", line: "#EEE4D8", ok: "#23835A", bad: "#C84B3B",
+    okSoft: "#E4F3EB", badSoft: "#FBEDE9",
+    cube: ["#9E3F00", "#D85B00", "#FF9238"],
+    shapes: ["#A33B00", "#8CB4FF", "#17130F"],
   },
   middle: {
-    ink: "#2E1F14", ink2: "#4A3320", paper: "#FAF3ED", card: "#FFFFFF",
-    amber: "#E8A63C", teal: "#B85C1E", tealSoft: "#FBE8D7",
-    muted: "#8A7361", line: "#EBDCCE", ok: "#3E8E68", bad: "#C2543E",
-    okSoft: "#E4F2EA", badSoft: "#FBEDE9",
-    cube: ["#8E4515", "#B85C1E", "#D98C4A"],
-    shapes: ["#A85218", "#8FBBC8", "#2E1F14"],
+    ink: "#17130F", ink2: "#4D453E", paper: "#FFFAF3", card: "#FFFFFF",
+    amber: "#FFB020", teal: "#9C3500", tealSoft: "#FFEBD3",
+    muted: "#887E74", line: "#EDE1D4", ok: "#23835A", bad: "#C84B3B",
+    okSoft: "#E4F3EB", badSoft: "#FBEDE9",
+    cube: ["#A84300", "#D85600", "#FF9643"],
+    shapes: ["#9C3500", "#9CC1FF", "#17130F"],
   },
   senior: {
-    ink: "#0E2A33", ink2: "#16404C", paper: "#EEF2F1", card: "#FFFFFF",
-    amber: "#E0973A", teal: "#1B7A8C", tealSoft: "#E3EFF1",
-    muted: "#6C7F84", line: "#D9E2E1", ok: "#3E8E68", bad: "#C2543E",
-    okSoft: "#E9F3EE", badSoft: "#FBEDE9",
-    cube: ["#14606E", "#1B7A8C", "#4FA3B2"],
-    shapes: ["#1B7A8C", "#E0973A", "#0E2A33"],
+    ink: "#17130F", ink2: "#4D453E", paper: "#FFF8EF", card: "#FFFFFF",
+    amber: "#FFB020", teal: "#8F3100", tealSoft: "#FFE7CA",
+    muted: "#887E74", line: "#EADCCD", ok: "#23835A", bad: "#C84B3B",
+    okSoft: "#E4F3EB", badSoft: "#FBEDE9",
+    cube: ["#873600", "#B94700", "#E9792D"],
+    shapes: ["#8F3100", "#A8CAFF", "#17130F"],
   },
 };
 
@@ -62,8 +62,8 @@ function applyPalette(ageKey) {
 }
 
 const SANS =
-  '"Inter","Helvetica Neue",Helvetica,Arial,system-ui,sans-serif';
-const SERIF = 'Georgia,"Times New Roman",serif';
+  '"Manrope","Helvetica Neue",Helvetica,Arial,system-ui,sans-serif';
+const SERIF = SANS;
 const MONO = 'ui-monospace,SFMono-Regular,Menlo,Consolas,monospace';
 
 
@@ -240,8 +240,17 @@ function Glyph({ shape, fill, rot = 0, count = 1, size = 30 }) {
   };
   const gap = size + 6;
   const startX = -((count - 1) * gap) / 2;
+  /* Ряд из четырёх фигур шире базового viewBox 100×100. Делаем область
+     просмотра адаптивной, чтобы крайние элементы уменьшались вместе с рядом,
+     а не обрезались границами SVG. Одиночные и парные фигуры остаются прежнего размера. */
+  const rowWidth = count * size + Math.max(0, count - 1) * 6;
+  const viewWidth = Math.max(100, rowWidth + 20);
   return (
-    <svg viewBox="-50 -50 100 100" style={{ width: "100%", height: "100%" }}>
+    <svg
+      viewBox={`${-viewWidth / 2} -50 ${viewWidth} 100`}
+      preserveAspectRatio="xMidYMid meet"
+      style={{ width: "100%", height: "100%", overflow: "visible" }}
+    >
       <g transform={`rotate(${rot})`}>
         {items.map((i) => (
           <g key={i} transform={`translate(${startX + i * gap},0)`}>
@@ -1339,14 +1348,20 @@ export default function App() {
       >
         <style>{`
           * { box-sizing: border-box; }
-          @keyframes fadeUp { from { opacity:0; transform: translateY(8px);} to {opacity:1;transform:none;} }
+          @keyframes fadeUp { from { opacity:0; transform: translateY(18px);} to {opacity:1;transform:none;} }
           @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:.45 } }
-          .fade { animation: fadeUp .32s ease both; }
+          @keyframes ambient { to { transform: translate3d(0,-22px,0) scale(1.05); } }
+          .fade { animation: fadeUp .62s cubic-bezier(.2,.8,.2,1) both; }
           button { font-family: inherit; cursor: pointer; }
-          button:focus-visible { outline: 2px solid ${C.teal}; outline-offset: 3px; }
-          .opt:hover { border-color: ${C.teal} !important; transform: translateY(-2px); }
+          button:focus-visible { outline: 3px solid ${C.tealSoft}; outline-offset: 3px; }
+          .opt { box-shadow: 0 8px 24px rgba(76,47,20,.05); transition: border-color .2s, transform .22s cubic-bezier(.2,.8,.2,1), box-shadow .22s; }
+          .opt:hover { border-color: ${C.teal} !important; transform: translateY(-3px); box-shadow: 0 14px 30px rgba(76,47,20,.10); }
+          #root::before,#root::after { content:""; position:fixed; z-index:0; border-radius:999px; pointer-events:none; animation:ambient 9s ease-in-out infinite alternate; }
+          #root::before { width:220px;height:220px;right:-110px;top:35%;background:rgba(255,176,32,.10); }
+          #root::after { width:150px;height:150px;left:-80px;top:14%;background:rgba(91,124,250,.06);animation-delay:-4s; }
+          #root > div { position:relative; z-index:1; }
           @media (hover: none) { .opt:hover { transform: none; } }
-          @media (prefers-reduced-motion: reduce) { .fade { animation: none; } }
+          @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms !important; transition-duration:.01ms !important; } }
         `}</style>
 
         {showBar && (
@@ -1397,7 +1412,7 @@ export default function App() {
 function Shell({ children, max }) {
   const A = useAge();
   return (
-    <div style={{ padding: "18px 18px 56px" }}>
+    <div style={{ padding: "24px 18px 64px" }}>
       <div style={{ maxWidth: max || A.ui.max, margin: "0 auto" }}>{children}</div>
     </div>
   );
@@ -1405,11 +1420,11 @@ function Shell({ children, max }) {
 
 function Progress({ value }) {
   return (
-    <div style={{ height: 3, background: C.line, borderRadius: 2, overflow: "hidden" }}>
+    <div style={{ height: 7, background: "rgba(255,255,255,.72)", border: `1px solid ${C.line}`, borderRadius: 99, overflow: "hidden", boxShadow: "0 6px 18px rgba(76,47,20,.05)" }}>
       <div
         style={{
           height: "100%", width: `${Math.max(0, Math.min(1, value)) * 100}%`,
-          background: C.teal, transition: "width .4s ease",
+          background: `linear-gradient(90deg, ${C.amber}, ${C.teal})`, borderRadius: 99, transition: "width .5s cubic-bezier(.2,.8,.2,1)",
         }}
       />
     </div>
@@ -1420,8 +1435,8 @@ function Eyebrow({ children }) {
   return (
     <div
       style={{
-        fontFamily: MONO, fontSize: 11, letterSpacing: ".12em",
-        textTransform: "uppercase", color: C.muted, marginBottom: 10,
+        fontFamily: SANS, fontWeight: 800, fontSize: 10.5, letterSpacing: ".13em",
+        textTransform: "uppercase", color: C.teal, marginBottom: 11,
       }}
     >
       {children}
@@ -1432,15 +1447,15 @@ function Eyebrow({ children }) {
 function Btn({ children, onClick, kind = "primary", disabled }) {
   const fs = useFs();
   const base = {
-    border: "none", borderRadius: 8, padding: "13px 26px",
-    fontSize: fs(15), fontWeight: 600, letterSpacing: ".01em",
-    transition: "opacity .15s, transform .1s",
+    border: "none", borderRadius: 17, padding: "15px 27px",
+    fontSize: fs(15), fontWeight: 800, letterSpacing: "-.01em",
+    transition: "opacity .2s, transform .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s",
     opacity: disabled ? 0.35 : 1,
   };
   const styles =
     kind === "primary"
-      ? { ...base, background: C.ink, color: "#fff" }
-      : { ...base, background: "transparent", color: C.teal, border: `1px solid ${C.line}` };
+      ? { ...base, background: `linear-gradient(110deg, #FFD84D, #FF7A18)`, color: "#281600", boxShadow: disabled ? "none" : "0 13px 30px rgba(255,122,24,.24)" }
+      : { ...base, background: "rgba(255,255,255,.78)", color: C.teal, border: `1px solid ${C.line}`, boxShadow: "0 8px 22px rgba(76,47,20,.06)" };
   return (
     <button style={styles} onClick={disabled ? undefined : onClick} disabled={disabled}>
       {children}
@@ -1453,7 +1468,7 @@ function Head({ eyebrow, title, sub }) {
   return (
     <>
       <Eyebrow>{eyebrow}</Eyebrow>
-      <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: fs(22), margin: "0 0 6px" }}>
+      <h2 style={{ fontFamily: SERIF, fontWeight: 800, letterSpacing: "-.035em", lineHeight: 1.15, fontSize: fs(24), margin: "0 0 8px" }}>
         {title}
       </h2>
       {sub && (
@@ -1645,15 +1660,15 @@ function HowTo({ game, copy, onStart }) {
     <Shell max={540}>
       <div className="fade">
         <Eyebrow>{copy.eyebrow}</Eyebrow>
-        <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: fs(27), margin: "0 0 8px" }}>
+        <h2 style={{ fontFamily: SERIF, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1.12, fontSize: fs(30), margin: "0 0 10px" }}>
           {copy.title}
         </h2>
         <p style={{ color: C.muted, fontSize: fs(14.5), margin: "0 0 22px" }}>
           Как это работает — на примере:
         </p>
 
-        <div style={{ background: C.card, border: `1px solid ${C.line}`,
-          borderRadius: 10, padding: "22px 18px", marginBottom: 24 }}>
+        <div style={{ background: "rgba(255,255,255,.82)", border: `1px solid rgba(255,255,255,.94)`,
+          borderRadius: 24, padding: "25px 20px", marginBottom: 26, boxShadow: "0 18px 48px rgba(76,47,20,.09)", backdropFilter: "blur(12px)" }}>
           <Example />
         </div>
 
@@ -1708,8 +1723,8 @@ function Intro({ child, onStart }) {
           </div>
         )}
 
-        <h1 style={{ fontFamily: SERIF, fontSize: fs(32), lineHeight: 1.22,
-          fontWeight: 400, margin: "0 0 16px" }}>
+        <h1 style={{ fontFamily: SERIF, fontSize: fs(36), lineHeight: 1.08,
+          letterSpacing: "-.05em", fontWeight: 800, margin: "0 0 20px" }}>
           {A.intro.h1[0]}<br />{A.intro.h1[1]}
         </h1>
 
@@ -1720,8 +1735,8 @@ function Intro({ child, onStart }) {
           {A.intro.p2}
         </p>
 
-        <div style={{ background: C.card, border: `1px solid ${C.line}`,
-          borderRadius: 10, padding: "16px 20px", marginBottom: 26 }}>
+        <div style={{ background: "rgba(255,255,255,.82)", border: "1px solid rgba(255,255,255,.94)",
+          borderRadius: 24, padding: "18px 21px", marginBottom: 28, boxShadow: "0 18px 48px rgba(76,47,20,.09)", backdropFilter: "blur(12px)" }}>
           {[
             ["Сколько идти", A.minutes],
             ["Заданий", A.blocks],

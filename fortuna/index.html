@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#fffaf3">
 <title>Колесо Фортуны · Kursor</title>
 <meta name="description" content="Крутите колесо фортуны Kursor и заберите подарок на мастер-классе!">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎡</text></svg>">
@@ -13,21 +13,22 @@
 <link rel="stylesheet" href="../assets/brand.css">
 <style>
   .wrap{
-    width:100%;max-width:520px;margin:0 auto;
-    padding:6px 18px calc(28px + env(safe-area-inset-bottom));
+    width:100%;max-width:560px;margin:0 auto;
+    padding:20px 18px calc(42px + env(safe-area-inset-bottom));
     display:flex;flex-direction:column;align-items:center;
   }
   .pill{
-    display:inline-flex;align-items:center;gap:7px;margin:14px 0 10px;padding:7px 15px;border-radius:100px;
-    background:rgba(250,204,21,.16);border:1px solid rgba(245,158,11,.35);
-    color:#b45309;font-weight:700;font-size:12.5px;letter-spacing:.3px;max-width:100%;text-align:center;
+    display:inline-flex;align-items:center;gap:8px;margin:2px 0 14px;padding:8px 14px;border-radius:100px;
+    background:rgba(255,255,255,.72);border:1px solid rgba(255,122,24,.18);box-shadow:var(--shadow-soft);
+    color:var(--orange-d);font-weight:800;font-size:12px;letter-spacing:.05em;text-transform:uppercase;max-width:100%;text-align:center;
   }
-  .pill .dot{width:7px;height:7px;border-radius:50%;background:var(--orange);box-shadow:0 0 10px rgba(249,115,22,.6);flex:0 0 auto}
-  h1{text-align:center;font-weight:800;line-height:1.12;font-size:clamp(23px,6.4vw,33px);letter-spacing:-.4px;max-width:100%}
-  h1 .grad{background:linear-gradient(100deg,#f59e0b,var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .pill .dot{width:7px;height:7px;border-radius:50%;background:var(--orange);box-shadow:0 0 0 6px rgba(255,122,24,.10);flex:0 0 auto;animation:dotpulse 2s ease-in-out infinite}
+  h1{text-align:center;font-weight:800;line-height:1.06;font-size:clamp(29px,7vw,43px);letter-spacing:-.05em;max-width:520px}
+  h1 .grad{background:linear-gradient(110deg,var(--orange-d),var(--orange),var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent}
   .lead{text-align:center;color:var(--ink-soft);font-size:clamp(14px,3.8vw,16px);margin-top:10px;max-width:340px}
 
-  .stage{position:relative;width:min(88vw,430px);aspect-ratio:1/1;margin:24px auto 8px;filter:drop-shadow(0 20px 42px rgba(15,15,15,.15))}
+  .stage{position:relative;width:min(86vw,430px);aspect-ratio:1/1;margin:27px auto 8px;padding:12px;border-radius:50%;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.9);box-shadow:0 30px 80px rgba(76,47,20,.16),inset 0 0 0 1px rgba(255,122,24,.05);backdrop-filter:blur(14px);animation:stagein .9s var(--ease) .18s both}
+  .stage::before{content:"";position:absolute;inset:12%;border-radius:50%;background:radial-gradient(circle,rgba(255,216,77,.22),transparent 64%);filter:blur(14px);animation:breath 3.4s ease-in-out infinite}
   #wheelSvg{width:100%;height:100%;display:block;overflow:visible}
   #wheel{transform-box:fill-box;transform-origin:center;transition:transform 5.2s cubic-bezier(.16,1,.3,1);will-change:transform}
   .seg-label{font-family:'Manrope',sans-serif;font-weight:800;font-size:12.5px;letter-spacing:.2px;text-transform:uppercase}
@@ -38,33 +39,35 @@
   @keyframes hubpulse{50%{transform:scale(.9)}}
 
   .btn-spin{
-    width:min(88vw,430px);max-width:100%;margin-top:18px;padding:19px 24px;border-radius:18px;font-size:19px;
+    width:min(86vw,430px);max-width:100%;margin-top:19px;padding:18px 24px;border-radius:18px;font-size:18px;
     font-family:inherit;font-weight:800;cursor:pointer;border:none;color:#3a2400;
     display:inline-flex;align-items:center;justify-content:center;gap:9px;user-select:none;touch-action:manipulation;
-    background:linear-gradient(100deg,var(--gold),var(--orange));
-    box-shadow:0 12px 28px rgba(249,115,22,.30),inset 0 1px 0 rgba(255,255,255,.45);
-    position:relative;overflow:hidden;transition:transform .12s ease,opacity .2s;
+    background:linear-gradient(110deg,var(--gold),var(--orange));
+    box-shadow:0 15px 34px rgba(255,122,24,.27),inset 0 1px 0 rgba(255,255,255,.55);
+    position:relative;overflow:hidden;transition:transform .2s var(--ease),box-shadow .2s,opacity .2s;
   }
   .btn-spin::after{content:"";position:absolute;top:0;left:-60%;width:45%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.6),transparent);transform:skewX(-20deg);animation:shine 3.4s ease-in-out infinite}
   @keyframes shine{0%,100%{left:-60%}55%{left:130%}}
+  .btn-spin:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 19px 40px rgba(255,122,24,.34),inset 0 1px 0 rgba(255,255,255,.65)}
   .btn-spin:not(:disabled):active{transform:scale(.97)}
   .btn-spin:disabled{opacity:.72;cursor:default}
   .btn-spin:disabled::after{display:none}
   .note{margin-top:14px;color:var(--ink-mute);font-size:13px;font-weight:600;max-width:min(90vw,430px);text-align:center}
 
-  .chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:20px;width:100%;max-width:430px}
-  .chip{font-size:12.5px;font-weight:600;color:#3a3a3a;padding:8px 13px;border-radius:100px;background:#f6f6f6;border:1px solid var(--line)}
+  .chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:22px;width:100%;max-width:450px}
+  .chip{font-size:12.5px;font-weight:700;color:var(--ink-soft);padding:8px 13px;border-radius:100px;background:rgba(255,255,255,.68);border:1px solid rgba(255,255,255,.9);box-shadow:0 5px 16px rgba(76,47,20,.05);animation:chipin .55s var(--ease) both}
+  .chip:nth-child(2){animation-delay:.05s}.chip:nth-child(3){animation-delay:.1s}.chip:nth-child(4){animation-delay:.15s}.chip:nth-child(5){animation-delay:.2s}.chip:nth-child(6){animation-delay:.25s}
 
   /* Инфоблок «мастер-класс / ученик» */
   .mk-info{display:flex;flex-direction:column;gap:6px;margin:2px 0 16px}
-  .mk-row{font-size:14.5px;color:var(--ink);background:#fff7e6;border:1px solid rgba(245,158,11,.3);border-radius:12px;padding:9px 12px}
+  .mk-row{font-size:14px;color:var(--ink);background:#fff8e8;border:1px solid rgba(255,176,32,.26);border-radius:13px;padding:10px 12px}
   .mk-row b{font-weight:800}
 
   /* Modal */
-  .modal{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(15,15,15,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  .modal{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(25,17,10,.54);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
   .modal.show{display:flex;animation:fade .3s ease}
   @keyframes fade{from{opacity:0}to{opacity:1}}
-  .modal-card{position:relative;width:100%;max-width:380px;text-align:center;background:#fff;border:1px solid rgba(245,158,11,.35);border-radius:26px;padding:34px 26px 26px;box-shadow:0 30px 70px rgba(15,15,15,.28);animation:pop .5s cubic-bezier(.2,1.2,.3,1) both}
+  .modal-card{position:relative;width:100%;max-width:400px;text-align:center;background:linear-gradient(180deg,#fff,#fffaf1);border:1px solid rgba(255,255,255,.92);border-radius:30px;padding:36px 27px 27px;box-shadow:0 36px 90px rgba(25,17,10,.34);animation:pop .55s cubic-bezier(.2,1.15,.3,1) both}
   @keyframes pop{from{transform:scale(.82) translateY(14px);opacity:0}to{transform:none;opacity:1}}
   .modal-close{position:absolute;top:12px;right:14px;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#f3f3f3;color:#666;font-size:20px;line-height:1;cursor:pointer;font-family:inherit;z-index:2}
   .modal-close:active{transform:scale(.94)}
@@ -77,25 +80,29 @@
   .fire-sub{color:var(--ink-soft);font-size:13.5px;margin-bottom:18px}
 
   /* Ticket */
-  .ticket{width:min(88vw,430px);margin:20px auto 0;text-align:center;background:#fffdf5;border:1.5px dashed rgba(245,158,11,.55);border-radius:22px;padding:24px 22px;box-shadow:0 16px 36px rgba(15,15,15,.10)}
+  .ticket{width:min(86vw,430px);margin:22px auto 0;text-align:center;background:rgba(255,255,255,.82);border:1.5px dashed rgba(255,122,24,.42);border-radius:25px;padding:26px 22px;box-shadow:var(--shadow);animation:kxreveal .65s var(--ease) both}
   .ticket-emoji{font-size:46px;line-height:1;margin-bottom:6px;filter:drop-shadow(0 6px 14px rgba(249,115,22,.35))}
   .ticket-title{font-weight:800;font-size:18px;line-height:1.3;margin-bottom:14px}
   .ticket-fire{color:var(--orange-d);font-weight:800;font-size:14.5px;margin-top:4px}
 
   #confetti{position:fixed;inset:0;z-index:55;pointer-events:none}
-  @media (max-width:360px){.seg-emoji{font-size:26px}.seg-label{font-size:11px}}
+  @keyframes dotpulse{50%{box-shadow:0 0 0 9px rgba(255,122,24,.04)}}
+  @keyframes stagein{from{opacity:0;transform:translateY(20px) scale(.94)}to{opacity:1;transform:none}}
+  @keyframes breath{50%{transform:scale(1.08);opacity:.65}}
+  @keyframes chipin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @media (max-width:360px){.seg-emoji{font-size:26px}.seg-label{font-size:11px}.stage{width:88vw;padding:8px}}
 </style>
 </head>
 <body>
 
-  <header class="kx-top">
+  <header class="kx-top kx-reveal">
     <img class="kx-logo" src="../assets/logo.png" alt="КУРСОР — школа программирования">
     <div class="kx-hello" data-kx-greeting>Здравствуйте! 👋</div>
   </header>
 
   <main class="wrap">
-    <div class="pill"><span class="dot"></span>Подарок на мастер-классе</div>
-    <h1>Нажмите на колесо,<br>чтобы <span class="grad">получить подарок</span></h1>
+    <div class="pill kx-reveal kx-delay-1"><span class="dot"></span>Подарок на мастер-классе</div>
+    <h1 class="kx-reveal kx-delay-2">Испытайте удачу —<br><span class="grad">подарок гарантирован</span></h1>
 
     <div class="stage">
       <svg id="wheelSvg" viewBox="0 0 420 420" aria-label="Колесо фортуны">

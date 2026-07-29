@@ -40,8 +40,10 @@ if (bundle.includes("</script")) throw new Error("бандл содержит </
 
 const html = tpl.replace("/*BUNDLE*/", bundle);
 fs.writeFileSync(path.join(root, "index.html"), html);
+const publicDiagnostic = path.resolve(root, "..", "diagnostic", "index.html");
+fs.writeFileSync(publicDiagnostic, html);
 const kb = (s) => (Buffer.byteLength(s) / 1024).toFixed(0);
-console.log(`index.html собран · бандл ${kb(bundle)} КБ · всего ${kb(html)} КБ`);
+console.log(`index.html собран · бандл ${kb(bundle)} КБ · всего ${kb(html)} КБ · публичная версия обновлена`);
 
 /* самопроверка: собранный файл должен реально запускаться */
 const { JSDOM } = await import("jsdom");
