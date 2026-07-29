@@ -654,16 +654,14 @@ const SPATIAL_PLANS = {
 const ROBOT_POOLS = {
   junior: [
     [
-      { lvl: 1, maxChips: 6, mult: false, g: ["S..T"] },
-      { lvl: 1, maxChips: 7, mult: false, g: ["S..", "..T"] },
-      { lvl: 2, maxChips: 8, mult: false, g: ["S.#", "..#", "..T"] },
-      { lvl: 3, maxChips: 3, mult: true,  g: ["S...T"] },
+      { lvl: 1, maxChips: 5, mult: false, g: ["S.T"] },
+      { lvl: 1, maxChips: 6, mult: false, g: ["S..", "..T"] },
+      { lvl: 2, maxChips: 7, mult: false, g: ["S.#", "..#", "..T"] },
     ],
     [
-      { lvl: 1, maxChips: 6, mult: false, g: ["S.T"] },
-      { lvl: 1, maxChips: 7, mult: false, g: ["S...", "...T"] },
-      { lvl: 2, maxChips: 8, mult: false, g: [".#T", ".#.", "S.."] },
-      { lvl: 3, maxChips: 3, mult: true,  g: ["S....T"] },
+      { lvl: 1, maxChips: 5, mult: false, g: ["S.T"] },
+      { lvl: 1, maxChips: 6, mult: false, g: ["S..", "..T"] },
+      { lvl: 2, maxChips: 7, mult: false, g: [".#T", ".#.", "S.."] },
     ],
   ],
   middle: [
@@ -1076,6 +1074,15 @@ const COPY_BASE = {
 
 const COPY_OVER = {
   junior: {
+    robot: {
+      eyebrow: "Мишка и мёд",
+      title: "Помоги мишке дойти до мёда",
+      steps: [
+        "Мишка стоит в начале, а мёд — в клетке с бочонком.",
+        "Нажимай кнопки «Вперёд», «Налево», «Направо» — мишка пойдёт по ним по очереди.",
+        "Нажми «Запустить» и посмотри, дойдёт ли. Не вышло — поправь и попробуй снова.",
+      ],
+    },
     memory: {
       title: "Запомни, где горело",
       steps: [
@@ -1139,17 +1146,19 @@ function resolveCopy(ageKey) {
    ВОЗРАСТНЫЕ ВЕРСИИ
    ============================================================ */
 const FLOW = ["patterns", "memory", "spatial", "q1", "robot", "debug", "order", "q2", "self"];
+/* junior (6–8): короче и добрее — 3 интуитивные игры + один вопрос + самооценка */
+const JUNIOR_FLOW = ["memory", "patterns", "robot", "q1", "self"];
 
 const AGES = {
   junior: {
     key: "junior",
     label: "6–8 лет",
-    minutes: "около 8 минут",
-    blocks: "две игры-серии и пара вопросов",
+    minutes: "около 5 минут",
+    blocks: "три коротких игры и вопрос",
     ui: { fs: 1.1, max: 520, cell: 62, memCell: 74 },
-    flow: FLOW,
+    flow: JUNIOR_FLOW,
     patterns: PATTERN_PLANS.junior,
-    memory: { grid: 3, lens: [3, 3, 4], onMs: 700, gapMs: 300 },
+    memory: { grid: 3, lens: [2, 3, 3], onMs: 800, gapMs: 320 },
     spatial: SPATIAL_PLANS.junior,
     robot: ROBOT_POOLS.junior,
     debug: DEBUG_TASKS.junior,
@@ -1158,7 +1167,7 @@ const AGES = {
     q2: Q2_POOLS.junior,
     intro: {
       h1: ["Привет!", "Давай поиграем"],
-      p1: "Тебя ждут игры: искать фигуры, запоминать, вести робота. Это не экзамен — тут нельзя проиграть.",
+      p1: "Тебя ждут три весёлые игры: запоминать огоньки, искать фигуры и помочь мишке дойти до мёда. Это не экзамен — тут нельзя проиграть.",
       p2: "Делай, как чувствуешь. Нам важно не сколько ты угадал, а как ты думаешь.",
       wrong: "ничего страшного, идём дальше",
     },
@@ -1561,23 +1570,28 @@ function ExampleSpatial() {
 }
 
 function ExampleRobot() {
+  const junior = useAge().key === "junior";
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
       <div style={{ display: "flex", gap: 5 }}>
         <div style={{ width: 44, height: 44, borderRadius: 7, background: C.paper,
           display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ width: 30, height: 30, borderRadius: 6, background: C.amber,
-            display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <svg width="12" height="12" viewBox="0 0 12 12" style={{ transform: "rotate(90deg)" }}>
-              <polygon points="6,1 11,10 6,7.5 1,10" fill={C.ink} />
-            </svg>
-          </div>
+          {junior
+            ? <span style={{ fontSize: 26, lineHeight: 1 }}>🐻</span>
+            : <div style={{ width: 30, height: 30, borderRadius: 6, background: C.amber,
+                display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <svg width="12" height="12" viewBox="0 0 12 12" style={{ transform: "rotate(90deg)" }}>
+                  <polygon points="6,1 11,10 6,7.5 1,10" fill={C.ink} />
+                </svg>
+              </div>}
         </div>
         <div style={{ width: 44, height: 44, borderRadius: 7, background: C.paper }} />
         <div style={{ width: 44, height: 44, borderRadius: 7, background: C.tealSoft,
           border: `1.5px dashed ${C.teal}`, display: "flex",
           alignItems: "center", justifyContent: "center" }}>
-          <div style={{ width: 9, height: 9, borderRadius: 5, background: C.teal }} />
+          {junior
+            ? <span style={{ fontSize: 24, lineHeight: 1 }}>🍯</span>
+            : <div style={{ width: 9, height: 9, borderRadius: 5, background: C.teal }} />}
         </div>
       </div>
       <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
@@ -1587,7 +1601,7 @@ function ExampleRobot() {
         <span style={{ background: C.ink, color: "#fff", borderRadius: 6,
           padding: "6px 11px", fontSize: 13 }}>Вперёд</span>
       </div>
-      <span style={{ fontSize: 13, color: C.muted }}>два шага — и робот на цели</span>
+      <span style={{ fontSize: 13, color: C.muted }}>{junior ? "два шага — и мишка у мёда" : "два шага — и робот на цели"}</span>
     </div>
   );
 }
@@ -2164,6 +2178,8 @@ const CMD = { F: "Вперёд", L: "Налево", R: "Направо" };
    data-атрибуты описывают клетки: по ним поле читает автотест (smoke.mjs),
    на вид они не влияют. */
 function Field({ G, pos, cellPx }) {
+  const A = useAge();
+  const junior = A.key === "junior";
   return (
     <div style={{
       background: C.card, border: `1px solid ${C.line}`, borderRadius: 10,
@@ -2197,20 +2213,31 @@ function Field({ G, pos, cellPx }) {
                 }}
               >
                 {isT && !isRobot && (
-                  <div style={{ width: 9, height: 9, borderRadius: 5, background: C.teal }} />
+                  junior
+                    ? <div style={{ fontSize: cellPx * 0.5, lineHeight: 1 }}>🍯</div>
+                    : <div style={{ width: 9, height: 9, borderRadius: 5, background: C.teal }} />
                 )}
                 {isRobot && (
-                  <div style={{
-                    width: cellPx - 14, height: cellPx - 14, borderRadius: 6,
-                    background: C.amber, display: "flex",
-                    alignItems: "center", justifyContent: "center",
-                    transform: `rotate(${pos.dir * 90}deg)`,
-                    transition: "transform .2s",
-                  }}>
-                    <svg width="12" height="12" viewBox="0 0 12 12">
-                      <polygon points="6,1 11,10 6,7.5 1,10" fill={C.ink} />
-                    </svg>
-                  </div>
+                  junior
+                    ? <div style={{ position: "relative", fontSize: cellPx * 0.56, lineHeight: 1 }}>
+                        🐻
+                        <span style={{
+                          position: "absolute", bottom: -4, right: -5, fontSize: cellPx * 0.3,
+                          color: C.amber, display: "inline-flex",
+                          transform: `rotate(${pos.dir * 90}deg)`, transition: "transform .2s",
+                        }}>▲</span>
+                      </div>
+                    : <div style={{
+                        width: cellPx - 14, height: cellPx - 14, borderRadius: 6,
+                        background: C.amber, display: "flex",
+                        alignItems: "center", justifyContent: "center",
+                        transform: `rotate(${pos.dir * 90}deg)`,
+                        transition: "transform .2s",
+                      }}>
+                        <svg width="12" height="12" viewBox="0 0 12 12">
+                          <polygon points="6,1 11,10 6,7.5 1,10" fill={C.ink} />
+                        </svg>
+                      </div>
                 )}
               </div>
             );
@@ -2316,12 +2343,14 @@ function Robot({ levels, onDone }) {
     <Shell>
       <div style={{ marginTop: 22 }} className="fade" key={li}>
         <Head
-          eyebrow={`Блок 2 · Робот · ${li + 1} из ${levels.length}`}
-          title="Приведи робота к кружку"
+          eyebrow={`${A.key === "junior" ? "Мишка и мёд" : "Блок 2 · Робот"} · ${li + 1} из ${levels.length}`}
+          title={A.key === "junior" ? "Помоги мишке дойти до мёда" : "Приведи робота к кружку"}
           sub={
-            L.mult
-              ? `Команд мало — всего ${L.maxChips}, а идти далеко. Нажимай на жёлтый значок ×1 у команды «Вперёд» — цифра вырастет, и робот повторит шаг столько раз. Так один «Вперёд ×5» заменяет пять команд.`
-              : `Нажимай на кнопки внизу — команды встанут по очереди. Их можно поставить до ${L.maxChips}.`
+            A.key === "junior"
+              ? "Нажимай кнопки внизу — мишка пойдёт по ним по очереди. Дойди до бочки с мёдом 🍯"
+              : L.mult
+                ? `Команд мало — всего ${L.maxChips}, а идти далеко. Нажимай на жёлтый значок ×1 у команды «Вперёд» — цифра вырастет, и робот повторит шаг столько раз. Так один «Вперёд ×5» заменяет пять команд.`
+                : `Нажимай на кнопки внизу — команды встанут по очереди. Их можно поставить до ${L.maxChips}.`
           }
         />
 
@@ -2405,9 +2434,11 @@ function Robot({ levels, onDone }) {
             fontSize: fs(14), color: C.ink2, background: C.tealSoft,
             padding: "11px 14px", borderRadius: 7, marginBottom: 13,
           }}>
-            {L.mult
-              ? "Робот не доехал. Подсказка: нажми на жёлтый значок ×1 рядом с командой «Вперёд» — робот повторит шаг несколько раз."
-              : "Робот не доехал. Посмотри, где сбился путь, и попробуй ещё раз."}
+            {A.key === "junior"
+              ? "Мишка не дошёл. Посмотри, где он свернул не туда, и попробуй ещё раз 🐻"
+              : L.mult
+                ? "Робот не доехал. Подсказка: нажми на жёлтый значок ×1 рядом с командой «Вперёд» — робот повторит шаг несколько раз."
+                : "Робот не доехал. Посмотри, где сбился путь, и попробуй ещё раз."}
           </div>
         )}
 
