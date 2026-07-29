@@ -229,9 +229,10 @@ async function runOnce(age, mode) {
     }
 
     /* --- робот --- */
-    if (at(/Блок 2 · Робот · \d+ из \d+/)) {
+    if (at(/(?:Блок 2 · Робот|Мишка и мёд) · \d+ из \d+/)) {
       seen.push("робот");
-      const before = /Робот · (\d+) из/.exec(text())[1];
+      const robotLabel = at(/Мишка и мёд · \d+ из/) ? "Мишка и мёд" : "Робот";
+      const before = new RegExp(`${robotLabel} · (\\d+) из`).exec(text())[1];
       const mult = /значок ×1/.test(text());
       const cap = Number(/(\d+) \/ (\d+)/.exec(text())?.[2] || 6);
       const G = readField(doc);
@@ -264,7 +265,7 @@ async function runOnce(age, mode) {
       }
       click(enabled("Запустить"));
       const moved = await waitFor(
-        () => !at(new RegExp(`Робот · ${before} из`)) || at(/Робот не доехал/),
+        () => !at(new RegExp(`${robotLabel} · ${before} из`)) || at(/Робот не доехал|Мишка не дошёл/),
         4000
       );
       if (!moved) { problems.push(`${label}: робот завис на уровне ${before}`); break; }

@@ -33,7 +33,7 @@ const PALETTES = {
     muted: "#887E74", line: "#EEE4D8", ok: "#23835A", bad: "#C84B3B",
     okSoft: "#E4F3EB", badSoft: "#FBEDE9",
     cube: ["#9E3F00", "#D85B00", "#FF9238"],
-    shapes: ["#A33B00", "#8CB4FF", "#17130F"],
+    shapes: ["#F2A65A", "#6D83D8", "#4A3F55"],
   },
   middle: {
     ink: "#17130F", ink2: "#4D453E", paper: "#FFFAF3", card: "#FFFFFF",
@@ -41,7 +41,7 @@ const PALETTES = {
     muted: "#887E74", line: "#EDE1D4", ok: "#23835A", bad: "#C84B3B",
     okSoft: "#E4F3EB", badSoft: "#FBEDE9",
     cube: ["#A84300", "#D85600", "#FF9643"],
-    shapes: ["#9C3500", "#9CC1FF", "#17130F"],
+    shapes: ["#F2A65A", "#6D83D8", "#4A3F55"],
   },
   senior: {
     ink: "#17130F", ink2: "#4D453E", paper: "#FFF8EF", card: "#FFFFFF",
@@ -49,7 +49,7 @@ const PALETTES = {
     muted: "#887E74", line: "#EADCCD", ok: "#23835A", bad: "#C84B3B",
     okSoft: "#E4F3EB", badSoft: "#FBEDE9",
     cube: ["#873600", "#B94700", "#E9792D"],
-    shapes: ["#8F3100", "#A8CAFF", "#17130F"],
+    shapes: ["#F2A65A", "#6D83D8", "#4A3F55"],
   },
 };
 
@@ -249,7 +249,7 @@ function Glyph({ shape, fill, rot = 0, count = 1, size = 30 }) {
     <svg
       viewBox={`${-viewWidth / 2} -50 ${viewWidth} 100`}
       preserveAspectRatio="xMidYMid meet"
-      style={{ width: "100%", height: "100%", overflow: "visible" }}
+      style={{ display: "block", width: "100%", height: "100%", minWidth: 0, overflow: "hidden" }}
     >
       <g transform={`rotate(${rot})`}>
         {items.map((i) => (
@@ -1369,7 +1369,17 @@ export default function App() {
           #root::before { width:220px;height:220px;right:-110px;top:35%;background:rgba(255,176,32,.10); }
           #root::after { width:150px;height:150px;left:-80px;top:14%;background:rgba(91,124,250,.06);animation-delay:-4s; }
           #root > div { position:relative; z-index:1; }
+          .pattern-sequence,
+          .pattern-options { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); }
+          .pattern-cell,
+          .pattern-option { min-width:0; width:100%; overflow:hidden; }
           @media (hover: none) { .opt:hover { transform: none; } }
+          @media (max-width: 520px) {
+            .pattern-sequence { gap:5px !important; }
+            .pattern-options { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px !important; }
+            .pattern-cell { padding:6px !important; border-radius:12px !important; }
+            .pattern-option { padding:9px !important; border-radius:16px !important; }
+          }
           @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms !important; transition-duration:.01ms !important; } }
         `}</style>
 
@@ -1816,7 +1826,7 @@ function Patterns({ tasks, onDone }) {
   };
 
   const cell = (spec, k) => (
-    <div key={k} style={{ aspectRatio: "1", background: C.card,
+    <div key={k} className="pattern-cell" style={{ aspectRatio: "1", background: C.card,
       border: `1px solid ${C.line}`, borderRadius: 8, padding: 10 }}>
       {spec ? (
         <Glyph {...spec} />
@@ -1837,18 +1847,18 @@ function Patterns({ tasks, onDone }) {
           sub="Пойми правило ряда и выбери подходящую фигуру внизу."
         />
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 9 }}>
+        <div className="pattern-sequence" style={{ gap: 9 }}>
           {task.seq.map((s, k) => cell(s, k))}
         </div>
 
         <Divider>ВЫБЕРИ ОТВЕТ</Divider>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 10 }}>
+        <div className="pattern-options" style={{ gap: 10 }}>
           {task.opts.map((s, k) => (
             <button
               key={k}
               onClick={() => choose(k)}
-              className="opt"
+              className="opt pattern-option"
               style={{
                 aspectRatio: "1", background: C.card, padding: 11,
                 border: `2px solid ${picked === k ? C.teal : C.line}`,
