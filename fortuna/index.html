@@ -222,10 +222,10 @@
       spinning=true; spinBtn.disabled=true; spinBtn.textContent='Крутим… 🎉';
       hub.classList.remove('spin-pulse'); void hub.offsetWidth; hub.classList.add('spin-pulse');
       var idx=winPool[Math.floor(Math.random()*winPool.length)];
-      var am=idx*SEG+SEG/2;
+      var am=idx*SEG+36;   // у начала сегмента наушников (ближе к верхнему краю, не по центру)
       var targetMod=((360-am)%360+360)%360, currentMod=((rotation%360)+360)%360;
       var delta=(targetMod-currentMod+360)%360;
-      var jitter=(Math.random()*2-1)*3, turns=6+Math.floor(Math.random()*4);
+      var jitter=(Math.random()*2-1)*2, turns=6+Math.floor(Math.random()*4);
       rotation+=turns*360+delta+jitter;
       wheelG.style.transform='rotate('+rotation+'deg)';
       playTicks();
