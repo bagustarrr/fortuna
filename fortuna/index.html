@@ -30,7 +30,7 @@
   .stage{position:relative;width:min(86vw,430px);aspect-ratio:1/1;margin:27px auto 8px;padding:12px;border-radius:50%;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.9);box-shadow:0 30px 80px rgba(76,47,20,.16),inset 0 0 0 1px rgba(255,122,24,.05);backdrop-filter:blur(14px);animation:stagein .9s var(--ease) .18s both}
   .stage::before{content:"";position:absolute;inset:12%;border-radius:50%;background:radial-gradient(circle,rgba(255,216,77,.22),transparent 64%);filter:blur(14px);animation:breath 3.4s ease-in-out infinite}
   #wheelSvg{width:100%;height:100%;display:block;overflow:visible}
-  #wheel{transform-box:fill-box;transform-origin:center;transition:transform 5.2s cubic-bezier(.16,1,.3,1);will-change:transform}
+  #wheel{transform-box:fill-box;transform-origin:center;transition:transform 6s cubic-bezier(.17,.85,.2,1);will-change:transform}
   .seg-label{font-family:'Manrope',sans-serif;font-weight:800;font-size:12.5px;letter-spacing:.2px;text-transform:uppercase}
   .seg-emoji{font-size:30px}
   #hub{cursor:pointer}
@@ -207,7 +207,7 @@
 
     var spinBtn=document.getElementById('spinBtn'), hub=document.getElementById('hub'), modal=document.getElementById('modal');
     var note=document.getElementById('note'), chips=document.getElementById('chips'), ticket=document.getElementById('ticket');
-    var SPIN_MS=5200, STORE_KEY='kursor_wheel_v4';
+    var SPIN_MS=6000, STORE_KEY='kursor_wheel_v4';
     var rotation=0, spinning=false, locked=false, revealTimer=null;
     var winPool=SEGMENTS.map(function(s,i){return s.win?i:-1;}).filter(function(i){return i>=0;});
 
@@ -225,7 +225,7 @@
       var am=idx*SEG+SEG/2;
       var targetMod=((360-am)%360+360)%360, currentMod=((rotation%360)+360)%360;
       var delta=(targetMod-currentMod+360)%360;
-      var jitter=(Math.random()*2-1)*(SEG/2-9), turns=6+Math.floor(Math.random()*4);
+      var jitter=(Math.random()*2-1)*3, turns=6+Math.floor(Math.random()*4);
       rotation+=turns*360+delta+jitter;
       wheelG.style.transform='rotate('+rotation+'deg)';
       playTicks();
@@ -260,7 +260,7 @@
     var actx=null;
     function ac(){ try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} return actx; }
     function beep(f,d,g){ var c=ac(); if(!c) return; try{ var o=c.createOscillator(),n=c.createGain(); o.type='triangle'; o.frequency.value=f; n.gain.value=g; n.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+d); o.connect(n); n.connect(c.destination); o.start(); o.stop(c.currentTime+d); }catch(e){} }
-    function playTicks(){ for(var k=0;k<26;k++){ (function(k){ var f=k/25, t=5000*(1-Math.pow(1-f,3)); setTimeout(function(){ beep(1100-260*Math.sin(f*Math.PI),0.05,0.05); }, t); })(k); } }
+    function playTicks(){ for(var k=0;k<30;k++){ (function(k){ var f=k/29, t=6000*(1-Math.pow(1-f,3.5)); setTimeout(function(){ beep(1100-260*Math.sin(f*Math.PI),0.05,0.05); }, t); })(k); } }
     function chime(){ beep(660,0.18,0.09); setTimeout(function(){beep(880,0.18,0.09);},120); setTimeout(function(){beep(1174,0.30,0.09);},240); }
 
     /* конфетти */
