@@ -46,7 +46,7 @@
 
   // Подтягиваем данные из amoCRM по номеру сделки (если чего-то не хватает).
   async function personalize(){
-    if (KX.deal && (!KX.client || !KX.child || !KX.mk || !KX.childAge)) {
+    if (KX.deal) {
       try {
         var r = await fetch("/api/lead?deal=" + encodeURIComponent(KX.deal));
         if (r.ok) {
@@ -57,6 +57,7 @@
             KX.childAge  = KX.childAge  || d.childAge  || "";
             KX.mk        = KX.mk        || d.mkTime    || "";
             KX.mkAddress = KX.mkAddress || d.mkAddress || "";
+            KX.diagnosticDone = !!d.diagnosticDone;
           }
         }
       } catch (e) { /* нет сети / не задеплоено — работаем на том, что есть в ссылке */ }

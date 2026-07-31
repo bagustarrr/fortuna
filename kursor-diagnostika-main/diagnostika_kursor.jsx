@@ -1321,11 +1321,26 @@ export default function App() {
 
   const steps = React.useMemo(() => buildSteps(A), [A]);
   const [si, setSi] = useState(0);
-  const step = steps[si];
+  /* уже проходил диагностику (флаг в amoCRM) — повторно нельзя */
+  const locked = React.useMemo(function () {
+    return !!(typeof window !== "undefined" && window.KX && window.KX.diagnosticDone);
+  }, []);
+  const step = locked ? { kind: "locked" } : steps[si];
   useEffect(() => {
     if (step.kind === "result" && typeof window !== "undefined" && window.KX && window.KX.tag) {
       window.KX.tag("diagnostic");
     }
+  }, [step.kind]);
+  /* на результатах и на экране блокировки — запрет «назад» */
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (step.kind !== "result" && step.kind !== "locked") return;
+    try {
+      window.history.pushState(null, "", window.location.href);
+      var onPop = function () { window.history.pushState(null, "", window.location.href); };
+      window.addEventListener("popstate", onPop);
+      return function () { window.removeEventListener("popstate", onPop); };
+    } catch (e) {}
   }, [step.kind]);
   const next = () => setSi((i) => Math.min(i + 1, steps.length - 1));
   const finish = (key) => (res) => {
@@ -1342,7 +1357,7 @@ export default function App() {
     order: <Order tasks={ses.order} onDone={finish("order")} />,
   };
 
-  const showBar = step.kind !== "intro" && step.kind !== "result";
+  const showBar = step.kind !== "intro" && step.kind !== "result" && step.kind !== "locked";
 
   return (
     <AgeCtx.Provider value={A}>
@@ -1420,6 +1435,8 @@ export default function App() {
         )}
 
         {step.kind === "result" && <Result child={child} data={data} />}
+
+        {step.kind === "locked" && <LockedScreen child={child} />}
       </div>
     </AgeCtx.Provider>
   );
@@ -3067,6 +3084,36 @@ export {
 /* ============================================================
    ЭКРАН РЕЗУЛЬТАТА (для родителя)
    ============================================================ */
+/* экран блокировки: диагностика уже пройдена, повторно нельзя */
+function LockedScreen({ child }) {
+  const A = useAge();
+  const name = (child && child.n && child.n.nom) ? child.n.nom : "Ребёнок";
+  return (
+    <Shell max={A.ui.max}>
+      <div className="fade" style={{ textAlign: "center", padding: "44px 4px 20px" }}>
+        <div style={{ fontSize: 56, lineHeight: 1, marginBottom: 14 }}>✅</div>
+        <div style={{ fontFamily: SERIF, fontSize: 26, marginBottom: 12, lineHeight: 1.2 }}>
+          Диагностика уже пройдена
+        </div>
+        <p style={{ fontSize: 16, lineHeight: 1.6, color: C.ink2, maxWidth: 380, margin: "0 auto 22px" }}>
+          {name} уже прошёл диагностику. Пройти её ещё раз нельзя.
+        </p>
+        <div style={{
+          display: "inline-flex", alignItems: "center", gap: 10, background: C.tealSoft,
+          border: `1px solid ${C.teal}`, borderRadius: 12, padding: "15px 22px",
+          fontSize: 16, fontWeight: 700, color: C.ink,
+        }}>
+          <span style={{ fontSize: 20, lineHeight: 1 }}>📋</span>
+          Ваши результаты переданы специалисту
+        </div>
+        <p style={{ fontSize: 14.5, lineHeight: 1.6, color: C.muted, maxWidth: 360, margin: "20px auto 0" }}>
+          Полную расшифровку специалист разберёт лично на мастер-классе.
+        </p>
+      </div>
+    </Shell>
+  );
+}
+
 function Result({ child, data }) {
   const { top, notes, dir } = compute(data, child.n);
   const meta = (code) => SCALES.find((x) => x.code === code);
@@ -3264,6 +3311,17 @@ function Result({ child, data }) {
             <span style={{ color: C.muted, fontSize: 13.5 }}>· {(typeof window !== "undefined" && window.KX && window.KX.mkAddress) || MEETING.where}</span>
           </div>
           <Btn onClick={() => {}}>Подтвердить, что придём</Btn>
+        </div>
+
+        {/* результаты переданы специалисту */}
+        <div style={{
+          marginTop: 16, background: C.tealSoft, border: `1px solid ${C.teal}`,
+          borderRadius: 10, padding: "14px 18px", display: "flex", alignItems: "center", gap: 10,
+        }}>
+          <span style={{ fontSize: 20, lineHeight: 1 }}>📋</span>
+          <span style={{ fontSize: 15, fontWeight: 700, color: C.ink }}>
+            Ваши результаты переданы специалисту
+          </span>
         </div>
 
         <div style={{
