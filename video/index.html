@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1">
 <meta name="theme-color" content="#fffaf3">
-<title>Видео-презентация · Kursor</title>
-<meta name="description" content="Видео-презентация школы программирования Kursor">
+<title>Видео от эксперта · Kursor</title>
+<meta name="description" content="Видео от эксперта в IT и детской психологии для родителей">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -83,14 +83,14 @@
     <!-- ЭКРАН 1: ввод номера сделки -->
     <section id="gate">
       <div class="video-kicker">▶️</div>
-      <h1>Видео-презентация <span class="grad">KURSOR</span></h1>
-      <p class="lead">Откройте короткое знакомство со школой. Номер доступа уже есть в сообщении вашего менеджера.</p>
+      <h1>Видео от <span class="grad">эксперта</span></h1>
+      <p class="lead">Как развить у ребёнка инстинкт достижения целей — чтобы не бросал начатое и доводил дело до конца. Видео от эксперта в IT и детской психологии.</p>
       <form class="gate-form" id="gateForm" novalidate>
-        <input class="deal-input" id="dealInput" inputmode="numeric" pattern="[0-9]*" placeholder="Номер сделки" autocomplete="off" aria-label="Номер сделки">
+        <input class="deal-input" id="dealInput" inputmode="numeric" pattern="[0-9]*" placeholder="Пароль" autocomplete="off" aria-label="Пароль">
         <button class="btn-go" id="enterBtn" type="submit">Открыть видео →</button>
       </form>
       <div class="msg" id="gateMsg"></div>
-      <div class="gate-hint">Видео доступно 24 часа с момента первого открытия.</div>
+      <div class="gate-hint">Напишите пароль, который отправил вам менеджер. Видео доступно 24 часа.</div>
     </section>
 
     <!-- ЭКРАН 2: видео -->
@@ -139,8 +139,8 @@
     if (urlDeal) dealInput.value = urlDeal;
 
     var ERR = {
-      bad_deal: "Введите номер сделки цифрами.",
-      deal_not_found: "Сделка не найдена. Проверьте номер у менеджера.",
+      bad_deal: "Введите пароль.",
+      deal_not_found: "Неверный пароль. Проверьте его у менеджера.",
       amo_auth: "Не удалось обратиться к CRM. Сообщите менеджеру.",
       server_not_configured: "Сервис не настроен. Сообщите менеджеру.",
       _default: "Не удалось открыть видео. Попробуйте ещё раз."
