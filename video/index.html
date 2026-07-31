@@ -178,10 +178,21 @@
       hello.innerHTML = (name ? ("Спасибо за покупку, " + name) : "Спасибо за покупку") + ' 👋';
       // видео
       srcEl.src = VIDEO_SRC; player.load();
+      // сразу ставим тег «Посмотрел видео» при открытии (без %, не с 70%)
+      markOpened();
       // таймер
       startCountdown(data.expiry);
       // трекинг
       attachTracking();
+    }
+
+    // тег ставится сразу при открытии видео; % просмотра докидывается отдельно через report()
+    function markOpened(){
+      if (!deal) return;
+      var payload = JSON.stringify({ deal: deal, event:"video" });
+      try {
+        fetch(API_TAG, { method:"POST", headers:{"Content-Type":"application/json"}, body: payload, keepalive:true });
+      } catch(e){}
     }
 
     function fmt(sec){
