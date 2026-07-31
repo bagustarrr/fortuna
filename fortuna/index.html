@@ -217,6 +217,11 @@
     var saved=loadState();
     if(saved && saved.done) showWon(false);
 
+    // серверная блокировка: уже крутил (флаг «Покрутил колесо» в amoCRM) — на любом устройстве
+    function checkServerLock(){ if(window.KX && window.KX.fortunaDone && !locked) showWon(false); }
+    document.addEventListener('kx:ready', checkServerLock);
+    if(window.KX && window.KX.ready) checkServerLock();
+
     function spin(){
       if(spinning||locked) return;
       spinning=true; spinBtn.disabled=true; spinBtn.textContent='Крутим… 🎉';
@@ -248,7 +253,7 @@
       spinBtn.style.display='none'; note.style.display='none'; chips.style.display='none';
       ticket.hidden=false;
       if(window.KX && KX.render) KX.render();
-      if(!animate){ wheelG.style.transition='none'; wheelG.style.transform='rotate(337.5deg)'; }
+      if(!animate){ wheelG.style.transition='none'; wheelG.style.transform='rotate(324deg)'; }
     }
     spinBtn.addEventListener('click', spin);
     hub.addEventListener('click', spin);

@@ -58,6 +58,7 @@
             KX.mk        = KX.mk        || d.mkTime    || "";
             KX.mkAddress = KX.mkAddress || d.mkAddress || "";
             KX.diagnosticDone = !!d.diagnosticDone;
+            KX.fortunaDone = !!d.fortunaDone;
           }
         }
       } catch (e) { /* нет сети / не задеплоено — работаем на том, что есть в ссылке */ }

@@ -26,6 +26,7 @@ module.exports = async function handler(req, res) {
   const mkKey = process.env.AMO_FIELD_MK || '';
   const addrKey = process.env.AMO_FIELD_MK_ADDR || '';
   const doneKey = process.env.AMO_FIELD_DONE_DIAGNOSTIC || 'Прошёл диагностику';
+  const fortunaKey = process.env.AMO_FIELD_DONE_FORTUNA || 'Покрутил колесо';
   const TZ = process.env.AMO_TIMEZONE || 'Asia/Almaty'; // Астана UTC+5
 
   function readField(cfs, key) {
@@ -79,11 +80,12 @@ module.exports = async function handler(req, res) {
     const childName = readField(contactCfs, childKey) || readField(leadCfs, childKey);
     const childAge = readField(contactCfs, ageKey) || readField(leadCfs, ageKey);
 
-    // уже проходил диагностику? (флаг на сделке — блокирует повторное прохождение)
-    const doneRaw = readField(leadCfs, doneKey);
-    const diagnosticDone = doneRaw === true || String(doneRaw).toLowerCase() === 'true' || doneRaw === '1';
+    // уже выполнял? флаги на сделке блокируют повтор (диагностика / колесо)
+    const isYes = (v) => v === true || String(v).toLowerCase() === 'true' || v === '1';
+    const diagnosticDone = isYes(readField(leadCfs, doneKey));
+    const fortunaDone = isYes(readField(leadCfs, fortunaKey));
 
-    return res.status(200).json({ ok: true, parentName, childName, childAge, mkTime, mkAddress, diagnosticDone });
+    return res.status(200).json({ ok: true, parentName, childName, childAge, mkTime, mkAddress, diagnosticDone, fortunaDone });
   } catch (e) {
     return res.status(200).json({ ok: false, error: 'network' });
   }
