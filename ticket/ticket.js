@@ -15,6 +15,41 @@
 
   if (params.get('embed') === '1') document.body.classList.add('is-embed');
   document.querySelector('[data-print]')?.addEventListener('click', () => window.print());
+  document.querySelector('[data-download]')?.addEventListener('click', downloadPng);
+
+  // Скачивание билета картинкой (PNG). Рендерим только карточку .ticket.
+  async function downloadPng(event) {
+    const button = event.currentTarget;
+    const node = document.querySelector('.ticket');
+    if (!node || !window.htmlToImage) { window.print(); return; }
+
+    const label = button.textContent;
+    button.disabled = true;
+    button.textContent = 'Готовим…';
+    const options = { pixelRatio: 2, cacheBust: true, backgroundColor: '#fffaf3' };
+    const who = (document.querySelector('[data-name]')?.textContent || 'bilet')
+      .trim().replace(/\s+/g, '-');
+    try {
+      // Blob-URL надёжнее на мобильных, чем гигантский data-URL
+      const blob = await window.htmlToImage.toBlob(node, options);
+      const href = blob ? URL.createObjectURL(blob)
+                        : await window.htmlToImage.toPng(node, options);
+      const link = document.createElement('a');
+      link.href = href;
+      link.download = `kursor-bilet-${who}.png`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      if (blob) setTimeout(() => URL.revokeObjectURL(href), 10000);
+    } catch (error) {
+      console.error('[kursor-ticket] download', error);
+      // запасной вариант — печать/сохранение в PDF
+      window.print();
+    } finally {
+      button.disabled = false;
+      button.textContent = label;
+    }
+  }
 
   function override(key) {
     return String(params.get(key) || '').trim();

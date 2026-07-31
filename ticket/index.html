@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#17130f">
   <title>KURSOR — билет ученика</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="ticket.css">
+  <link rel="stylesheet" href="/assets/fonts/manrope.css">
+  <link rel="stylesheet" href="/ticket/ticket.css">
 </head>
 <body>
   <main class="ticket-page">
@@ -17,7 +15,10 @@
         <span class="eyebrow">KURSOR PASS</span>
         <h1>Билет ученика</h1>
       </div>
-      <button class="print-button" type="button" data-print>Скачать / печать</button>
+      <div class="head-actions">
+        <button class="print-button" type="button" data-download>⬇ Скачать PNG</button>
+        <button class="print-button ghost" type="button" data-print>Печать</button>
+      </div>
     </header>
 
     <article class="ticket" aria-label="Билет ученика в школу KURSOR">
@@ -78,7 +79,8 @@
 
     <p class="status" data-status aria-live="polite"></p>
   </main>
-  <script src="../assets/kursor.js"></script>
-  <script src="ticket.js"></script>
+  <script src="/assets/kursor.js"></script>
+  <script src="/assets/html-to-image.min.js"></script>
+  <script src="/ticket/ticket.js"></script>
 </body>
 </html>
