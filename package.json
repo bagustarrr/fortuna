@@ -5,5 +5,13 @@
   "description": "Колесо Фортуны Kursor + интеграция с amoCRM (тег на сделку)",
   "engines": {
     "node": ">=18"
+  },
+  "scripts": {
+    "build:zaklyuchenie": "node scripts/build-zaklyuchenie.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.23.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   }
 }
