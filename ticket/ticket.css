@@ -36,7 +36,6 @@ body{
 
 .ticket{position:relative;display:grid;grid-template-columns:31% minmax(0,1fr) 21%;min-height:370px;overflow:hidden;border:1px solid rgba(255,255,255,.85);border-radius:34px;background:var(--card);box-shadow:var(--shadow)}
 .ticket-visual{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:30px;color:#fff;background:linear-gradient(145deg,#20191d 0%,#4a3f55 48%,#6d83d8 130%)}
-.ticket-visual::before{content:"";position:absolute;z-index:-2;width:360px;height:360px;right:-225px;top:-165px;border:78px solid rgba(255,216,77,.92);border-radius:50%}
 .ticket-visual::after{content:"";position:absolute;z-index:-1;width:180px;height:180px;right:-60px;bottom:-80px;border-radius:48px;background:linear-gradient(145deg,var(--orange),var(--orange-soft));transform:rotate(24deg)}
 .brand{line-height:0}.brand-logo{display:block;height:30px;width:auto;filter:brightness(0) invert(1)}
 .visual-copy{position:relative;z-index:2}.visual-copy span{display:block;margin-bottom:10px;color:rgba(255,255,255,.64);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}.visual-copy strong{font-size:clamp(25px,3vw,38px);line-height:1.02;letter-spacing:-.05em}
@@ -58,7 +57,7 @@ body{
 .stub-number{font-size:9px;font-weight:800;writing-mode:vertical-rl;transform:rotate(180deg)}
 .stub-values{display:flex;justify-content:center;gap:18px;width:100%}.stub-values div{display:flex;flex-direction:column;align-items:center;gap:3px}.stub-values span{color:var(--muted);font-size:9px;letter-spacing:.04em}.stub-values strong{font-size:29px;letter-spacing:-.06em}
 .stub-barcode{display:flex;flex-direction:column;align-items:center;gap:7px;width:100%}
-.stub-deal{font-size:9px;font-weight:700;letter-spacing:.04em;color:var(--muted)}.stub-deal strong{color:var(--ink);font-weight:800}
+.stub-deal{font-size:12px;font-weight:800;letter-spacing:.02em;color:var(--ink)}.stub-deal strong{color:var(--ink);font-weight:800}
 .barcode{width:72%;height:25px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 4px,var(--ink) 4px 5px,transparent 5px 8px)}
 .status{min-height:20px;margin:16px 4px 0;color:var(--muted);font-size:12px}.status.is-error{color:#b23b23}
 
