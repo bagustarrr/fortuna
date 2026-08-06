@@ -10,74 +10,106 @@
 </head>
 <body>
   <main class="ticket-page">
-    <header class="page-head">
-      <div>
+
+    <!-- ШАГ 1 — форма перед билетом -->
+    <section class="setup" id="setup">
+      <div class="setup-card">
         <span class="eyebrow">KURSOR PASS</span>
         <h1>Билет ученика</h1>
+        <p class="setup-hint">Данные подтянутся из сделки по ссылке <code>?deal=…</code>. Можно поправить или заполнить вручную.</p>
+
+        <label class="fld">
+          <span>Имя ученика</span>
+          <input type="text" id="f-name" placeholder="напр. Нуржан" autocomplete="off">
+        </label>
+        <label class="fld">
+          <span>Дата и время мастер-класса</span>
+          <input type="text" id="f-date" placeholder="напр. 2 августа, 14:00" autocomplete="off">
+        </label>
+        <label class="fld">
+          <span>Тренер</span>
+          <input type="text" id="f-mentor" value="Темерлан" autocomplete="off">
+        </label>
+
+        <button class="btn-primary" type="button" data-generate>Показать билет</button>
+        <p class="setup-deal" data-setup-deal></p>
       </div>
-      <div class="head-actions">
-        <button class="print-button" type="button" data-download>⬇ Скачать PNG</button>
-        <button class="print-button ghost" type="button" data-print>Печать</button>
-      </div>
-    </header>
+    </section>
 
-    <article class="ticket" aria-label="Билет ученика в школу KURSOR">
-      <section class="ticket-visual" aria-hidden="true">
-        <div class="brand">KURS<span>OR</span></div>
-        <div class="visual-copy">
-          <span>Школа программирования</span>
-          <strong>Создавай.<br>Играй.<br>Развивайся.</strong>
+    <!-- ШАГ 2 — билет -->
+    <div id="ticketView" hidden>
+      <header class="page-head">
+        <div>
+          <span class="eyebrow">KURSOR PASS</span>
+          <h1>Билет ученика</h1>
         </div>
-        <div class="code-cloud">
-          <i>&lt;/&gt;</i><i>01</i><i>{ }</i><i>↗</i>
+        <div class="head-actions">
+          <button class="print-button ghost" type="button" data-back>← Изменить</button>
+          <button class="print-button" type="button" data-download>⬇ Скачать PNG</button>
+          <button class="print-button ghost" type="button" data-print>Печать</button>
         </div>
-      </section>
+      </header>
 
-      <section class="ticket-main">
-        <div class="ticket-topline">
-          <span class="ticket-kind">Билет ученика в школу KURSOR</span>
-          <span class="ticket-number" data-ticket-number>№KCR6709906</span>
-        </div>
-
-        <div class="student-block">
-          <span class="label">Имя ученика</span>
-          <h2 data-name>Арлан</h2>
-        </div>
-
-        <div class="schedule" aria-label="Дата и время занятия">
-          <span class="schedule-date" data-date>2 августа 2026</span>
-          <span class="schedule-dot">•</span>
-          <span data-time>10:30</span>
-        </div>
-
-        <div class="ticket-details">
-          <div class="detail">
-            <span class="label">Тренер</span>
-            <strong data-mentor>Темерлан</strong>
+      <article class="ticket" aria-label="Билет ученика в школу КУРСОР">
+        <section class="ticket-visual" aria-hidden="true">
+          <div class="brand"><img src="/assets/kursor-logo.png" alt="КУРСОР" class="brand-logo"></div>
+          <div class="visual-copy">
+            <strong>Создавай.<br>Играй.<br>Развивайся.</strong>
           </div>
-          <div class="detail detail-address">
-            <span class="label">Адрес</span>
-            <strong data-address>ул. Жумабека Ташенова, 8</strong>
+          <div class="code-cloud">
+            <i>&lt;/&gt;</i><i>01</i><i>{ }</i><i>↗</i>
           </div>
-        </div>
+        </section>
 
-        <div class="topic" data-topic>Мастер-класс по программированию</div>
-      </section>
+        <section class="ticket-main">
+          <div class="ticket-topline">
+            <span class="ticket-kind">Билет ученика в школу КУРСОР</span>
+            <span class="ticket-number" data-ticket-number>№KCR6709906</span>
+          </div>
 
-      <aside class="ticket-stub">
-        <div class="notch notch-top" aria-hidden="true"></div>
-        <div class="notch notch-bottom" aria-hidden="true"></div>
-        <span class="stub-caption">Входной билет</span>
-        <span class="stub-number" data-ticket-number>№KCR6709906</span>
-        <div class="stub-values">
-          <div><span>Место</span><strong data-seat>10</strong></div>
-          <div><span>Компьютер</span><strong data-computer>12</strong></div>
-        </div>
-        <div class="barcode" aria-hidden="true"></div>
-      </aside>
-    </article>
+          <div class="student-block">
+            <span class="label">Имя ученика</span>
+            <h2 data-name>Арлан</h2>
+          </div>
 
-    <p class="status" data-status aria-live="polite"></p>
+          <div class="schedule" aria-label="Дата и время занятия">
+            <span class="schedule-date" data-date>2 августа</span>
+            <span class="schedule-dot">•</span>
+            <span data-time>14:00</span>
+          </div>
+
+          <div class="ticket-details">
+            <div class="detail">
+              <span class="label">Тренер</span>
+              <strong data-mentor>Темерлан</strong>
+            </div>
+            <div class="detail detail-address">
+              <span class="label">Адрес</span>
+              <strong>ул. Жумабека Ташенова, 8</strong>
+            </div>
+          </div>
+
+          <div class="topic" data-topic>Мастер-класс по программированию</div>
+        </section>
+
+        <aside class="ticket-stub">
+          <div class="notch notch-top" aria-hidden="true"></div>
+          <div class="notch notch-bottom" aria-hidden="true"></div>
+          <span class="stub-caption">Входной билет</span>
+          <span class="stub-number" data-ticket-number>№KCR6709906</span>
+          <div class="stub-values">
+            <div><span>Место</span><strong data-seat>10</strong></div>
+            <div><span>Компьютер</span><strong data-computer>12</strong></div>
+          </div>
+          <div class="stub-barcode">
+            <div class="stub-deal">Сделка № <strong data-deal>—</strong></div>
+            <div class="barcode" aria-hidden="true"></div>
+          </div>
+        </aside>
+      </article>
+
+      <p class="status" data-status aria-live="polite"></p>
+    </div>
   </main>
   <script src="/assets/kursor.js"></script>
   <script src="/assets/html-to-image.min.js"></script>
