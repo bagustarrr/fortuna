@@ -34,8 +34,8 @@ body{
 .print-button.ghost:hover{background:#fff;border-color:var(--orange);color:var(--orange)}
 .print-button[disabled]{opacity:.6;cursor:default;transform:none;background:var(--ink)}
 
-/* билет — формат 4:3 (ширина 1000), на узких экранах ужимается целиком через zoom (JS) */
-.ticket{position:relative;display:grid;grid-template-rows:38% 1fr;width:1000px;max-width:1000px;aspect-ratio:4/3;margin:0 auto;overflow:hidden;border:1px solid rgba(255,255,255,.85);border-radius:34px;background:var(--card);box-shadow:var(--shadow)}
+/* билет — вертикальный формат 3:4 (ширина 780), на узких экранах ужимается целиком через zoom (JS) */
+.ticket{position:relative;display:grid;grid-template-rows:40% 1fr;width:780px;max-width:780px;aspect-ratio:3/4;margin:0 auto;overflow:hidden;border:1px solid rgba(255,255,255,.85);border-radius:34px;background:var(--card);box-shadow:var(--shadow)}
 
 /* верхний баннер */
 .t-hero{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:34px 44px;color:#fff;background:linear-gradient(145deg,#20191d 0%,#4a3f55 48%,#6d83d8 130%)}
@@ -43,20 +43,21 @@ body{
 .brand{line-height:0}.brand-logo{display:block;height:34px;width:auto;filter:brightness(0) invert(1)}
 .t-hero-copy{position:relative;z-index:2}.t-hero-copy strong{font-size:44px;line-height:1.02;letter-spacing:-.05em}
 .code-cloud i{position:absolute;font-style:normal;font-weight:800;color:rgba(255,255,255,.12)}
-.code-cloud i:nth-child(1){right:40px;top:42%;font-size:54px}.code-cloud i:nth-child(2){left:44px;bottom:34px;font-size:30px}
+.code-cloud i:nth-child(1){right:44px;top:30%;font-size:56px}.code-cloud i:nth-child(2){right:64px;top:52%;font-size:32px}
 
-/* инфо-блок */
-.t-body{min-width:0;display:flex;flex-direction:column;padding:26px 44px 30px}
+/* инфо-блок — равномерно распределяем группы по высоте */
+.t-body{min-width:0;display:flex;flex-direction:column;justify-content:space-between;padding:32px 44px 36px}
 .ticket-topline{display:flex;align-items:center;justify-content:space-between;gap:20px}
 .ticket-kind{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.ticket-number{font-size:12.5px;font-weight:800;white-space:nowrap}
-.student-block{margin-top:16px}.label{display:block;margin-bottom:5px;color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}.student-block h2{overflow-wrap:anywhere;margin:0;font-size:58px;line-height:1;letter-spacing:-.05em}
-.schedule{align-self:flex-start;display:inline-flex;align-items:center;gap:9px;margin-top:16px;padding:11px 17px;border:1.5px solid var(--orange);border-radius:999px;background:#fff6eb;font-size:14px;font-weight:800;text-transform:uppercase}
+.student-block{margin:0}.label{display:block;margin-bottom:5px;color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}.student-block h2{overflow-wrap:anywhere;margin:0;font-size:64px;line-height:1;letter-spacing:-.05em}
+.schedule{align-self:flex-start;display:inline-flex;align-items:center;gap:9px;margin-top:18px;padding:11px 17px;border:1.5px solid var(--orange);border-radius:999px;background:#fff6eb;font-size:14px;font-weight:800;text-transform:uppercase}
 .schedule-dot{color:var(--orange)}
-.ticket-details{display:flex;gap:56px;margin-top:22px}.detail strong{display:block;font-size:16px;line-height:1.3}
-.topic{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.t-meta{margin-top:30px}
+.ticket-details{display:flex;gap:56px}.detail strong{display:block;font-size:16px;line-height:1.3}
+.topic{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
 
 /* нижний «отрывной» стаб */
-.t-stub{margin-top:auto;padding-top:20px;border-top:2px dashed #c9bdb2;display:flex;align-items:flex-end;justify-content:space-between;gap:30px}
+.t-stub{padding-top:22px;border-top:2px dashed #c9bdb2;display:flex;align-items:flex-end;justify-content:space-between;gap:30px}
 .t-stub-vals{display:flex;gap:38px}
 .t-stub-item{display:flex;flex-direction:column;gap:3px}.t-stub-item span{color:var(--muted);font-size:10px;letter-spacing:.05em;text-transform:uppercase}.t-stub-item strong{font-size:26px;letter-spacing:-.04em;color:var(--ink)}
 .barcode{width:240px;height:46px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 4px,var(--ink) 4px 5px,transparent 5px 8px)}
