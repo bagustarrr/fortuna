@@ -75,6 +75,17 @@
     try { window.parent.postMessage({ kxTicket: 'height', height: h }, '*'); } catch (e) {}
   }
 
+  // Билет всегда одного формата (ширина DESIGN_W). На узких экранах не перестраиваем
+  // макет, а равномерно ужимаем через zoom под доступную ширину.
+  const DESIGN_W = 960;
+  function fitTicket() {
+    const ticket = document.querySelector('.ticket');
+    if (!ticket || ticketView.hidden) return;
+    const page = document.querySelector('.ticket-page');
+    const avail = page ? page.clientWidth : DESIGN_W;
+    ticket.style.zoom = Math.min(1, avail / DESIGN_W);
+  }
+
   function showTicket() {
     const name = titleCase((fName && fName.value) || '');
     const sched = parseSchedule((fDate && fDate.value) || '');
@@ -95,6 +106,7 @@
     if (name) document.title = `KURSOR — билет: ${name}`;
     setup.hidden = true;
     ticketView.hidden = false;
+    fitTicket();
     window.scrollTo(0, 0);
     postHeight();
   }
@@ -114,6 +126,9 @@
     const label = button.textContent;
     button.disabled = true;
     button.textContent = 'Готовим…';
+    // снимаем zoom — картинка всегда в полном размере (960px), независимо от экрана
+    const prevZoom = node.style.zoom;
+    node.style.zoom = '1';
     const options = { pixelRatio: 2, cacheBust: true, backgroundColor: '#fffaf3' };
     const who = (document.querySelector('[data-name]')?.textContent || 'bilet').trim().replace(/\s+/g, '-');
     try {
@@ -130,6 +145,7 @@
       console.error('[kursor-ticket] download', error);
       window.print();
     } finally {
+      node.style.zoom = prevZoom;
       button.disabled = false;
       button.textContent = label;
     }
@@ -140,14 +156,13 @@
   document.addEventListener('kx:ready', prefill);
   if (window.KX && window.KX.ready) prefill();
 
-  // авто-высота при встраивании (iframe): следим за размером и сообщаем родителю
-  if (window.parent !== window) {
-    window.addEventListener('load', postHeight);
-    window.addEventListener('resize', postHeight);
-    if (window.ResizeObserver) {
-      const page = document.querySelector('.ticket-page');
-      if (page) new ResizeObserver(postHeight).observe(page);
-    }
-    [150, 500, 1200].forEach((t) => setTimeout(postHeight, t));
+  // билет ужимается под ширину экрана; в iframe — ещё и сообщаем высоту родителю
+  function refit() { fitTicket(); postHeight(); }
+  window.addEventListener('resize', refit);
+  window.addEventListener('load', refit);
+  [150, 500, 1200].forEach((t) => setTimeout(refit, t));
+  if (window.parent !== window && window.ResizeObserver) {
+    const page = document.querySelector('.ticket-page');
+    if (page) new ResizeObserver(postHeight).observe(page);
   }
 })();
