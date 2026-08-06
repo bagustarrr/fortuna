@@ -129,7 +129,7 @@
     // снимаем zoom — картинка всегда в полном размере (960px), независимо от экрана
     const prevZoom = node.style.zoom;
     node.style.zoom = '1';
-    const options = { pixelRatio: 2, cacheBust: true, backgroundColor: '#fffaf3' };
+    const options = { pixelRatio: 3, cacheBust: true, backgroundColor: '#fffaf3' };
     const who = (document.querySelector('[data-name]')?.textContent || 'bilet').trim().replace(/\s+/g, '-');
     try {
       const blob = await window.htmlToImage.toBlob(node, options);
