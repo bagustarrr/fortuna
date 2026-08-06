@@ -77,7 +77,7 @@
 
   // Билет всегда одного формата (ширина DESIGN_W). На узких экранах не перестраиваем
   // макет, а равномерно ужимаем через zoom под доступную ширину.
-  const DESIGN_W = 960;
+  const DESIGN_W = 1000;
   function fitTicket() {
     const ticket = document.querySelector('.ticket');
     if (!ticket || ticketView.hidden) return;

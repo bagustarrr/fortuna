@@ -51,17 +51,13 @@
       </header>
 
       <article class="ticket" aria-label="Билет ученика в школу КУРСОР">
-        <section class="ticket-visual" aria-hidden="true">
+        <div class="t-hero">
           <div class="brand"><img src="/assets/kursor-logo.png" alt="КУРСОР" class="brand-logo"></div>
-          <div class="visual-copy">
-            <strong>Создавай.<br>Играй.<br>Развивайся.</strong>
-          </div>
-          <div class="code-cloud">
-            <i>&lt;/&gt;</i><i>{ }</i>
-          </div>
-        </section>
+          <div class="t-hero-copy"><strong>Создавай.<br>Играй.<br>Развивайся.</strong></div>
+          <div class="code-cloud"><i>&lt;/&gt;</i><i>{ }</i></div>
+        </div>
 
-        <section class="ticket-main">
+        <div class="t-body">
           <div class="ticket-topline">
             <span class="ticket-kind">Билет ученика в школу КУРСОР</span>
             <span class="ticket-number" data-ticket-number>№KCR6709906</span>
@@ -90,22 +86,16 @@
           </div>
 
           <div class="topic" data-topic>Мастер-класс по программированию</div>
-        </section>
 
-        <aside class="ticket-stub">
-          <div class="notch notch-top" aria-hidden="true"></div>
-          <div class="notch notch-bottom" aria-hidden="true"></div>
-          <span class="stub-caption">Входной билет</span>
-          <span class="stub-number" data-ticket-number>№KCR6709906</span>
-          <div class="stub-values">
-            <div><span>Место</span><strong data-seat>10</strong></div>
-            <div><span>Компьютер</span><strong data-computer>12</strong></div>
-          </div>
-          <div class="stub-barcode">
-            <div class="stub-deal"><strong data-deal>—</strong></div>
+          <div class="t-stub">
+            <div class="t-stub-vals">
+              <div class="t-stub-item"><span>Место</span><strong data-seat>10</strong></div>
+              <div class="t-stub-item"><span>Компьютер</span><strong data-computer>12</strong></div>
+              <div class="t-stub-item"><span>Сделка</span><strong data-deal>—</strong></div>
+            </div>
             <div class="barcode" aria-hidden="true"></div>
           </div>
-        </aside>
+        </div>
       </article>
 
       <p class="status" data-status aria-live="polite"></p>
