@@ -78,14 +78,14 @@ body{
 .setup-deal{margin:14px 0 0;text-align:center;color:var(--muted);font-size:12px}
 
 body.is-loading [data-name],body.is-loading [data-date],body.is-loading [data-time],body.is-loading [data-mentor],body.is-loading [data-address]{color:transparent;border-radius:8px;background:linear-gradient(90deg,#eee6dc 25%,#f8f2ea 50%,#eee6dc 75%);background-size:200% 100%;animation:ticketShimmer 1.2s infinite}
-body.is-embed .page-head,body.is-embed .status{display:none}.is-embed .ticket-page{width:100%;padding:0}.is-embed .ticket{min-height:100svh;border:0;border-radius:0;box-shadow:none}
+body.is-embed .status{display:none}.is-embed .ticket-page{width:min(1180px,calc(100% - 24px));padding:14px 0}
 @keyframes ticketShimmer{to{background-position:-200% 0}}
 
 @media(max-width:760px){
   .ticket-page{width:min(100% - 24px,560px);padding:24px 0 42px}.page-head{align-items:center}.print-button{padding:10px 14px;font-size:11px}
   .ticket{grid-template-columns:1fr;border-radius:26px}.ticket-visual{min-height:190px;padding:24px}.visual-copy strong{font-size:30px}.code-cloud i:nth-child(2){display:none}
   .ticket-main{padding:25px 22px}.ticket-topline{align-items:flex-start}.ticket-kind{max-width:190px}.student-block{margin-top:25px}.student-block h2{font-size:46px}.schedule{font-size:10px;gap:5px;padding:9px 11px}.ticket-details{margin-top:8px;grid-template-columns:1fr;gap:15px}.detail-address{text-align:left}
-  .ticket-stub{min-height:142px;display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:1fr auto;gap:10px 18px;padding:24px 22px;border-left:0;border-top:2px dashed #c9bdb2}.notch{top:-15px;width:28px;height:28px}.notch-top{left:-14px}.notch-bottom{right:-14px;left:auto;bottom:auto}.stub-caption,.stub-number{writing-mode:horizontal-tb;transform:none}.stub-caption{align-self:start}.stub-number{align-self:start;justify-self:center}.stub-values{grid-column:3;grid-row:1 / span 2;align-self:center}.stub-barcode{grid-column:1 / span 2;gap:5px}.barcode{width:100%;height:20px}.is-embed .ticket{min-height:100svh;border-radius:0}
+  .ticket-stub{min-height:142px;display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:1fr auto;gap:10px 18px;padding:24px 22px;border-left:0;border-top:2px dashed #c9bdb2}.notch{top:-15px;width:28px;height:28px}.notch-top{left:-14px}.notch-bottom{right:-14px;left:auto;bottom:auto}.stub-caption,.stub-number{writing-mode:horizontal-tb;transform:none}.stub-caption{align-self:start}.stub-number{align-self:start;justify-self:center}.stub-values{grid-column:3;grid-row:1 / span 2;align-self:center}.stub-barcode{grid-column:1 / span 2;gap:5px}.barcode{width:100%;height:20px}
 }
 
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}

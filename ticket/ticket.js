@@ -64,8 +64,15 @@
     const hint = $('[data-setup-deal]');
     if (hint) hint.textContent = deal ? `Сделка № ${deal}` : 'Номер сделки в ссылке не найден — заполните поля вручную.';
     prefilled = true;
-    // встраивание (?embed=1) — сразу показываем билет без формы
-    if (params.get('embed') === '1') showTicket();
+  }
+
+  // Встраивание в iframe (Tilda): сообщаем родителю высоту контента,
+  // чтобы iframe подстраивался по высоте, а не растягивал билет на весь экран.
+  function postHeight() {
+    if (window.parent === window) return;
+    const page = document.querySelector('.ticket-page');
+    const h = page ? Math.ceil(page.getBoundingClientRect().height) + 24 : document.body.scrollHeight;
+    try { window.parent.postMessage({ kxTicket: 'height', height: h }, '*'); } catch (e) {}
   }
 
   function showTicket() {
@@ -89,12 +96,14 @@
     setup.hidden = true;
     ticketView.hidden = false;
     window.scrollTo(0, 0);
+    postHeight();
   }
 
   function showSetup() {
     ticketView.hidden = true;
     setup.hidden = false;
     window.scrollTo(0, 0);
+    postHeight();
   }
 
   // Скачивание билета картинкой (PNG). Рендерим только карточку .ticket.
@@ -130,4 +139,15 @@
   prefill();
   document.addEventListener('kx:ready', prefill);
   if (window.KX && window.KX.ready) prefill();
+
+  // авто-высота при встраивании (iframe): следим за размером и сообщаем родителю
+  if (window.parent !== window) {
+    window.addEventListener('load', postHeight);
+    window.addEventListener('resize', postHeight);
+    if (window.ResizeObserver) {
+      const page = document.querySelector('.ticket-page');
+      if (page) new ResizeObserver(postHeight).observe(page);
+    }
+    [150, 500, 1200].forEach((t) => setTimeout(postHeight, t));
+  }
 })();
