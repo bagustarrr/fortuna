@@ -78,6 +78,7 @@
   // Билет всегда одного формата (ширина DESIGN_W). На узких экранах не перестраиваем
   // макет, а равномерно ужимаем через zoom под доступную ширину.
   const DESIGN_W = 780;
+  const DESIGN_H = 1040;
   function fitTicket() {
     const ticket = document.querySelector('.ticket');
     if (!ticket || ticketView.hidden) return;
@@ -126,12 +127,22 @@
     const label = button.textContent;
     button.disabled = true;
     button.textContent = 'Готовим…';
-    // снимаем zoom — картинка всегда в полном размере (960px), независимо от экрана
+    // Снимаем zoom и задаём ЯВНЫЕ размеры холста (780×1040) + zoom:1 на клоне —
+    // иначе на части браузеров (iOS Safari) размеры считаются неверно и билет обрезается.
     const prevZoom = node.style.zoom;
     node.style.zoom = '1';
-    const options = { pixelRatio: 3, cacheBust: true, backgroundColor: '#fffaf3' };
+    const options = {
+      pixelRatio: 3,
+      cacheBust: true,
+      backgroundColor: '#fffaf3',
+      width: DESIGN_W,
+      height: DESIGN_H,
+      style: { zoom: '1', transform: 'none', margin: '0' }
+    };
     const who = (document.querySelector('[data-name]')?.textContent || 'bilet').trim().replace(/\s+/g, '-');
     try {
+      // прогрев: в Safari первый рендер часто неполный/обрезанный — делаем два прохода
+      await window.htmlToImage.toPng(node, options).catch(() => {});
       const blob = await window.htmlToImage.toBlob(node, options);
       const href = blob ? URL.createObjectURL(blob) : await window.htmlToImage.toPng(node, options);
       const link = document.createElement('a');
